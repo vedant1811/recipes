@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Scaffolding - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="../setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="../setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="../setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="../storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="../storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="../storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="../event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="../event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="../event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="../event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="../module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="../testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="../testing/scaffolding.html" class="active"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="../advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="../advanced/safety.html"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="../advanced/incentive.html"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="../advanced/lock.html"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="../advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="../advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="../advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="../advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="../advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="../dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#scaffolding" id="scaffolding"><h2>Scaffolding</h2></a>
+<p>To test a module in the context of Substrate, there is bit more work required to set up our testing environment. Here, we'll introduce one scaffolding design pattern to test a module. If you just want the code, you can just use the <code>mod test{}</code> at the bottom of the <a href="https://github.com/shawntabrizi/substrate-package/blob/master/substrate-node-template/runtime/src/template.rs">Substrate Node Template</a>. However, because most modules require some custom configuration, it is useful to understand the components that comprise the scaffolding.</p>
+<p>Before we dive in, create a <code>mock.rs</code> and <code>test.rs</code> file in the runtime directory (<a href="https://github.com/shawntabrizi/substrate-package/blob/master/substrate-node-template/runtime/src/">here</a>). At the top of <code>mock.rs</code> and <code>test.rs</code>, include the following compilation flag:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#![cfg(test)]
+#fn main() {
+#}</code></pre></pre>
+<p>This basically tells the compiler to only run the tests if the <a href="https://doc.rust-lang.org/cargo/guide/tests.html"><code>cargo test</code></a> command is invoked. For more information on this syntax, check out the <a href="https://doc.rust-lang.org/reference/attributes.html#conditional-compilation">Rust reference guide</a> as well as <a href="https://os.phil-opp.com/unit-testing/">this unit testing tutorial by Philipp Oppermann</a>. Within the <code>mock.rs</code> file, we include the following imports</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use primitives::{BuildStorage, traits::IdentityLookup, testing::{Digest, DigestItem, Header, UintAuthorityId}};
+use srml_support::impl_outer_origin;
+use runtime_io;
+use substrate_primitives::{H256, Blake2Hasher};
+#}</code></pre></pre>
+<p>It is also necessary to import the module configuration traits. For this recipe,  import <code>Module</code> and <code>Trait</code>. We may also import <code>GenesisConfig</code> if some storage items are set to be configured in the genesis block (marked with <code>config()</code> in the <code>decl_storage</code> block).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use crate::{GenesisConfig, Module, Trait};
+#}</code></pre></pre>
+<a class="header" href="#constructing-a-mock-runtime" id="constructing-a-mock-runtime"><h3>Constructing a Mock Runtime</h3></a>
+<p>To test the module, construct a mock runtime. To do so, create a configuration type called <code>Test</code> which implements the configuration traits.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct Test;
+#}</code></pre></pre>
+<p>The <a href="https://doc.rust-lang.org/edition-guide/rust-2018/macros/custom-derive.html">derive attribute</a> ensures that you don't have to manually implement the <code>Clone, PartialEq, Eq, Debug</code> traits; the compiler does this for you thereby ensuring that the <code>Test</code> type conforms to the behavior of these traits.</p>
+<p>Even so, this doesn't work for all traits. Indeed, there are a few traits that require manual implementation to set up the testing environment in <code>test.rs</code>. In most case, these <em>implementations</em> are limited to specifying the type in your module that corresponds to the type in the imported module. For example, the <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs">Staking module</a> implements the <code>balances</code> trait in its <code>mock.rs</code> file like so:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl balances::Trait for Test {
+    type Balance = u64;
+    type OnFreeBalanceZero = Staking;
+    type OnNewAccount = ();
+    type Event = ();
+    type TransactionPayment = ();
+    type TransferPayment = ();
+    type DustRemoval = ();
+}
+#}</code></pre></pre>
+<blockquote>
+<p>If the configuration logic is not overly complicated, the pattern that follows below can be forgone and replaced with something like <a href="https://github.com/paritytech/substrate/blob/master/srml/aura/src/mock.rs">the test scaffolding in <code>srml/aura</code></a>.</p>
+</blockquote>
+<p>Next, define an <code>ExtBuilder</code> struct that contains the configuration items from your module. In <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>, this looks like</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub struct ExtBuilder {
+    existential_deposit: u64,
+    session_length: u64,
+    sessions_per_era: u64,
+    current_era: u64,
+    reward: u64,
+    validator_pool: bool,
+    nominate: bool,
+    validator_count: u32,
+    minimum_validator_count: u32,
+    fair: bool,
+}
+#}</code></pre></pre>
+<p>It is useful for testing purposes to define default configuration values for each of the struct's fields. There is a <a href="https://doc.rust-lang.org/std/default/trait.Default.html">derive macro</a> which could be invoked instead as an annotation on the <code>ExtBuilder</code> struct, but it assumes certain default values. From <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>,</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl Default for ExtBuilder {
+    fn default() -&gt; Self {
+        Self {
+            existential_deposit: 0,
+            session_length: 1,
+            sessions_per_era: 1,
+            current_era: 0,
+            reward: 10,
+            validator_pool: false,
+            nominate: true,
+            validator_count: 2,
+            minimum_validator_count: 0,
+            fair: true
+        }
+    }
+}
+#}</code></pre></pre>
+<p>To implement the relevant methods for <code>ExtBuilder</code>, convention dictates defining a function to set each configuration value like so</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl ExtBuilder {
+        pub fn existential_deposit(mut self, existential_deposit: u64) -&gt; Self {
+        self.existential_deposit = existential_deposit;
+        self
+    }
+    pub fn session_length(mut self, session_length: u64) -&gt; Self {
+        self.session_length = session_length;
+        self
+    }
+    pub fn sessions_per_era(mut self, sessions_per_era: u64) -&gt; Self {
+        self.sessions_per_era = sessions_per_era;
+        self
+    }
+    pub fn _current_era(mut self, current_era: u64) -&gt; Self {
+        self.current_era = current_era;
+        self
+    }
+    pub fn validator_pool(mut self, validator_pool: bool) -&gt; Self {
+        self.validator_pool = validator_pool;
+        self
+    }
+    pub fn nominate(mut self, nominate: bool) -&gt; Self {
+        self.nominate = nominate;
+        self
+    }
+    pub fn validator_count(mut self, count: u32) -&gt; Self {
+        self.validator_count = count;
+        self
+    }
+    pub fn minimum_validator_count(mut self, count: u32) -&gt; Self {
+        self.minimum_validator_count = count;
+        self
+    }
+    pub fn fair(mut self, is_fair: bool) -&gt; Self {
+        self.fair = is_fair;
+        self
+    }
+    // more code...
+}
+#}</code></pre></pre>
+<p>Next, define a <code>build</code> method for <code>ExtBuilder</code> to properly set all the configuration values in our runtime storage. If we are just using our default values, it is not more complicated than defining the following method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn build() -&gt; runtime_io::TestExternalities&lt;Blake2Hasher&gt; {
+    system::GenesisConfig::&lt;Test&gt;::default().build_storage().unwrap().0.into()
+}
+#}</code></pre></pre>
+<p>However, the logic for the <code>build</code> method in <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a> is slightly more complicated to allow for a diversity of testing scenarios.</p>
+<p>At the bottom of the <code>mock.rs</code> file, publicly declare all of the modules used in correspondence to the traits that were <em>implemented</em> for the <code>Test</code> struct. For <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>,</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub type System = system::Module&lt;Test&gt;;
+pub type Balances = balances::Module&lt;Test&gt;;
+pub type Session = session::Module&lt;Test&gt;;
+pub type Timestamp = timestamp::Module&lt;Test&gt;;
+pub type Staking = Module&lt;Test&gt;;
+#}</code></pre></pre>
+<a class="header" href="#setting-up-the-testing-environment" id="setting-up-the-testing-environment"><h3>Setting up the Testing Environment</h3></a>
+<p>All of the types publicly declared at the bottom of <code>mock.rs</code> are imported in <code>test.rs</code> along with any other traits that will be used in the unit testing and any necessary comparison operators. <em>We're still using <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking/src/mock.rs</code></a> for the example</em></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// don't forget this at the top of the file to indicate 
+// compilation only with the `cargo test` command
+#![cfg(test)]
+
+use super::*;
+use runtime_io::with_externalities;
+use phragmen;
+use primitives::PerU128;
+use srml_support::{assert_ok, assert_noop, assert_eq_uvec, EnumerableStorageMap}; // comparison operators
+use mock::{Balances, Session, Staking, System, Timestamp, Test, ExtBuilder, Origin}; // publicly declared types
+use srml_support::traits::{Currency, ReservableCurrency};
+#}</code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../testing/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../advanced/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../testing/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../advanced/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

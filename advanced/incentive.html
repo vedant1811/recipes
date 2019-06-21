@@ -1,0 +1,404 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Incentive Design - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="../setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="../setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="../setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="../storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="../storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="../storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="../event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="../event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="../event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="../event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="../module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="../testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="../testing/scaffolding.html"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="../advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="../advanced/safety.html"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="../advanced/incentive.html" class="active"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="../advanced/lock.html"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="../advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="../advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="../advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="../advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="../advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="../dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#incentive-design" id="incentive-design"><h1>Incentive Design</h1></a>
+<blockquote>
+<p><strong>Progress cannot always be monotonic because solutions to problems create new problems</strong> -<em>Steven Pinker</em></p>
+</blockquote>
+<p>The first rule of incentive design is sometimes just <em>don't</em>. Human coordination does not always require explicit mechanisms guided by fees and reward payouts. In many cases, the mutual benefits of an interaction drive coordination; adding an explicit fee structure may be redundant and unnecessary.</p>
+<p>With that said, we haven't <em>really</em> scaled human coordination. Although the internet has facilitated communication across borders and timezones, the tragedy of the commons (aka free rider problem) still limits our ability to collaborate in groups larger than <a href="http://www.lifewithalacrity.com/2008/09/group-threshold.html">primitive thresholds</a>. If you're not immediately convinced, consider any (broken) system for provisioning public goods -- social security, humanitarian aid, immigration, education, or even blockchain infrastructure maintenance. <strong>Despite a relative abundance of resources, we consistently struggle to coordinate efficient and meaningful allocation to those in need.</strong></p>
+<p>By aligning stakeholder incentives through dynamic reward/fee structures, blockchain will catalyze human coordination on an increasingly global scale. Now, let's talk incentive design.</p>
+<ul>
+<li><a href="#hide">Minimizing Hidden Costs</a></li>
+<li><a href="#closed">Closed Incentive Loops</a></li>
+<li><a href="#utxo">Ex1. UTXO</a></li>
+<li><a href="#sun">Ex2. SunshineDAO</a></li>
+<li><a href="#dilute">Bonus: Dilution Safety for SunshineDAO</a></li>
+</ul>
+<a class="header" href="#minimizing-hidden-costs-a-name--hidea" id="minimizing-hidden-costs-a-name--hidea"><h2>Minimizing Hidden Costs <a name = "hide"></a></h2></a>
+<p>As Substrate developers, it is important to reflect on the <em>hidden costs</em> of our mechanisms and consider how to communicate these costs transparently to all active and potential users. Above all else, we do not want to create another system where the few that are familiar with the rules thrive while most struggle with basic interaction (<em>see modern capitalism</em>).</p>
+<p>To not repeat the mistakes of the past, it is important for us to recognize instances of abusive mechanism design. For this we may look no further than <a href="https://mises.org/library/how-central-banking-increased-inequality">inflation</a>. The <a href="https://www.aier.org/article/sound-money-project/cantillon-effects-and-money-neutrality">Cantillon Effect</a> describes the phenomenon wherein minting more currency benefits those that receive it first because market prices do not immediately reflect an increase in supply.</p>
+<blockquote>
+<p><em>The first recipient of the new supply of money is in the convenient position of being able to spend extra dollars before prices have increased. But whoever is last in line receives his share of new dollars after prices have increased. This is why when the Treasury’s deficit is monetized, inflation is referred to as a non-legislated tax. In these cases, the government has seized purchasing power (rather than physical bills) from its citizens without congressional approval.</em> ~ <a href="https://www.aier.org/article/sound-money-project/cantillon-effects-and-money-neutrality">Cantillon Effects and Monetary Neutrality</a></p>
+</blockquote>
+<p>This does NOT mean that inflation or central banks are inherently <em>evil</em>, but rather that we need to be increasingly wary of the dilutive effects of minting new tokens/shares/currency. To be clear, the problem is NOT that inflation enforces a tax on public wealth by extracting purchasing power, but rather that this action is entirely swept under the rug as <em>neutral</em> monetary policy. <strong>Hidden costs like inflation threaten the economic sovereignty of participants and discredit the mechanism's legitimacy.</strong></p>
+<p>Transparency isn't a criteria just because it's <em>the right way</em> to do things. Hidden costs increase complexity and add <a href="https://nakamotoinstitute.org/static/docs/micropayments-and-mental-transaction-costs.pdf">mental overhead</a>, thereby limiting the diversity of users and rendering simulation increasingly unrealistic.</p>
+<a class="header" href="#closed-incentive-loop-a-name--closeda" id="closed-incentive-loop-a-name--closeda"><h2>Closed Incentive Loop <a name = "closed"></a></h2></a>
+<p><strong>To minimize hidden costs like inflation, we structure incentives as a closed loop in which fees cover rewards.</strong></p>
+<p>Not every system follows this rule; Bitcoin incentivizes the sustained security of the blockchain by minting new UTXOs to the <em>winning</em> miner upon committing the discovered block. Ceteris paribus, this constant inflation deteriorates the purchasing power of other Bitcoin holders for every new block added to the chain, but, in practice, Bitcoin's price is <em>resistant</em> to changes in supply (at least in the short-term).</p>
+<p>By structuring mechanisms as closed incentive loops, we prioritize the economic sovereignty of passive actors.</p>
+<p>In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the difference between transaction inputs and outputs are distributed evenly among the validator set. In <a href="https://github.com/4meta5/SunshineDAO"><code>SunshineDAO</code></a>, we bond proposals for both the sponsor and the applicant to fund rewards for proposal processing. By paying for rewards with fees, neither of these examples rely on inflationary funding. This choice is preferrable as it minimizes the hidden costs to passive holders.</p>
+<ul>
+<li><a href="#utxo">UTXO Closed Loop</a></li>
+<li><a href="#sun">SunshineDAO Closed Loop</a></li>
+</ul>
+<p>At the same time, not all mechanisms that incorporate closed incentive loops are exempt from inflationary risks. The most obvious example in <a href="https://github.com/AmarRSingh/SunshineDAO">SunshineDAO</a> is the share dilution that occurs when <em>some</em> proposals are accepted and executed. As an example, grant proposals may request share ownership without committing stake above a transaction fee (the proposal fee). In this case, the minting of shares to execute the accepted proposal dilutes the ownership of existing members. Without making them explicitly aware of this possibility, the DAO risks volatility and collapse (<code>=&gt;</code> mass member exit).</p>
+<ul>
+<li><a href="#dilute">Dilution Safety Mechanism</a></li>
+</ul>
+<a class="header" href="#utxo-a-name--utxoa" id="utxo-a-name--utxoa"><h2>UTXO <a name = "utxo"></a></h2></a>
+<p>Substrate developers need to <strong>stay cognizant of the price paid for resource usage</strong> within the runtime. This can be unintuitive for smart contract developers who are accustomed to interacting with a sandboxed execution environment like the EVM.</p>
+<p>Indeed, Substrate is a bit more hands-on. When storage changes occur within a runtime function, they are not automatically reverted if the function panics thereafter. For this reason, it is imperative that any resource used by a transaction must explicitly be paid for within the module. For a more comprehensive explanation, check out <a href="https://docs.substrate.dev/docs/tcr-tutorial-best-practices">the tcr tutorial's best practices</a>: <em>If the resources used might be dependent on transaction parameters or pre-existing on-chain state, then your in-module fee structure must adapt accordingly.</em></p>
+<p>So how do we design a robust in-module fee structure? In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the difference between inputs and outputs for valid transactions is distributed evenly among the authority set. This pattern demonstrates one approach for incentivizing validation via a floating transaction fee which varies in cost according to the value of the native currency and the relative size/activity of the validator set.</p>
+<p>To properly incentivize the ecosystem's actors through the fee structure, the leftover value is distributed evenly among the authorities in the <code>spend_leftover</code> runtime function:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// uxto-workshop/runtime/src/utxo.rs `decl_module{}`
+/// Redistribute combined leftover value evenly among chain authorities
+fn spend_leftover(authorities: &amp;[H256]) {
+    let leftover = &lt;LeftoverTotal&lt;T&gt;&gt;::take();
+    let share_value: Value = leftover
+        .checked_div(authorities.len() as Value)
+        .ok_or(&quot;No authorities&quot;)
+        .unwrap();
+    if share_value == 0 { return }
+
+    let remainder = leftover
+        .checked_sub(share_value * authorities.len() as Value)
+        .ok_or(&quot;Sub underflow&quot;)
+        .unwrap();
+    &lt;LeftoverTotal&lt;T&gt;&gt;::put(remainder as Value);
+
+    for authority in authorities {
+        let utxo = TransactionOutput {
+            value: share_value,
+            pubkey: *authority,
+            salt: &lt;system::Module&lt;T&gt;&gt;::block_number().as_(),
+        };
+
+        let hash = BlakeTwo256::hash_of(&amp;utxo);
+
+        if !&lt;UnspentOutputs&lt;T&gt;&gt;::exists(hash) {
+            &lt;UnspentOutputs&lt;T&gt;&gt;::insert(hash, utxo);
+            runtime_io::print(&quot;leftover share sent to&quot;);
+            runtime_io::print(hash.as_fixed_bytes() as &amp;[u8]);
+        } else {
+            runtime_io::print(&quot;leftover share wasted due to hash collision&quot;);
+        }
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#sunshinedao-a-name--suna" id="sunshinedao-a-name--suna"><h2>SunshineDAO <a name = "sun"></a></h2></a>
+<blockquote>
+<p><em>Context</em>: SunshineDAO is a fund coordination DAO. Proposals to the DAO request share issuance and, optionally, stake capital. By burning shares, a member of the DAO redeems capital held by the DAO (in proportion to the number of shares they burn). For more information, see the <a href="https://github.come/4meta5/SunshineDAO">github</a>.</p>
+</blockquote>
+<p>Imagine that our DAO has a pool of pending proposals. Each proposal requires sponsorship by a member of the DAO. As more proposals are submitted, the pool's size increases, and it becomes more difficult for voting members to keep track of the current state. To alleviate state bloat, stale proposals that have not passed in the defined voting period must be removed from the pool and successful proposals should be executed. Moreover, a cost should be attached to proposal submissions to prevent spam.</p>
+<p>In summary, we need to guide actor incentives to</p>
+<ol>
+<li>sponsor proposals</li>
+<li>remove stale proposals</li>
+<li>process successful proposals</li>
+<li>mitigate proposal spam</li>
+</ol>
+<p>Fortunately, we can use <strong>(4)</strong> to fund <strong>(1)</strong>, <strong>(2)</strong>, and <strong>(3)</strong>, thereby constructing a closed incentive loop. Specifically, we require a bond (~<em>collateral</em>) from both the applicant and the sponsoring member to submit a proposal. Within the <code>decl_module</code> block, we have a <code>propose</code> function which includes the following logic.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    let who = ensure_signed(origin)?;
+    ensure!(Self::is_member(&amp;who), &quot;proposer is not a member of Dao&quot;);
+
+    // reserve member's bond for proposal
+    T::Currency::reserve(&amp;who, Self::proposal_bond())
+        .map_err(|_| &quot;balance of proposer is too low&quot;)?;
+    // reserve applicant's tokenTribute for proposal
+    T::Currency::reserve(&amp;applicant, tokenTribute)
+        .map_err(|_| &quot;balance of applicant is too low&quot;)?;
+}
+#}</code></pre></pre>
+<p>If the proposal is aborted within a short period after submission, then the bonds can be returned without penalty.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn abort(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // check that the abort is within the window
+    ensure!(
+        proposal.startTime + Self::abort_window() &gt;= &lt;system::Module&lt;T&gt;&gt;::block_number(),
+        &quot;it is past the abort window&quot;
+    );
+
+    // return the proposalBond back to the proposer because they aborted
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // and the tokenTribute (&gt;= `proposalFee` amount) to the applicant
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+}
+#}</code></pre></pre>
+<p>However, if the proposal does not pass, then the bonds for both parties are transferred to the member that processes the proposal (thereby incentivizing <strong>(2)</strong> with our solution to <strong>(4)</strong>).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn process(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // IF NOT PASS
+    // transfer the proposalBond back to the proposer
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // transfer proposer's proposal bond to the processer
+    T::Currency::transfer(&amp;proposal.proposer, &amp;who, Self::proposal_bond());
+    // return the applicant's tokenTribute
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+    // transfer applicant's proposal fee to the processer
+    T::Currency::transfer(&amp;proposal.applicant, &amp;who, Self::proposal_fee());
+}
+#}</code></pre></pre>
+<p>If the proposal passes, the sponsor's bond is returned, and the applicant's bond is split between the sponsor and the processing member (<strong>(4)</strong> =&gt; <strong>(1)</strong>, <strong>(3)</strong>).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn process(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // IF PASS
+    // transfer the proposalBond back to the proposer
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // and the applicant's tokenTribute
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+
+    // split the proposal fee between the proposer and the processer
+    let txfee = Self::proposal_fee().checked_mul(0.5);
+    T::Currency::make_transfer(&amp;proposal.applicant, &amp;who, txfee);
+    T::Currency::make_transfer(&amp;proposal.applicant, &amp;proposal.proposer, txfee);
+}
+#}</code></pre></pre>
+<p>The basic bonding pattern used in this example follows this pattern:</p>
+<ul>
+<li>Bonding stake =&gt; <code>T::Currency::reserve</code></li>
+<li>Unbonding stake =&gt; <code>T::Currency::unreserve</code></li>
+<li>Transferring bond =&gt; <code>T::Currency::make_transfer</code></li>
+</ul>
+<p><em>NOTE: alternative to the <code>reserve =&gt; unreserve (=&gt;) transfer</code> bonding pattern is introduced in <a href="./lock.html">Scheduling Collateralization</a>.</em></p>
+<a class="header" href="#dilution-safety-mechanism-a-name--dilutea" id="dilution-safety-mechanism-a-name--dilutea"><h2>Dilution Safety Mechanism <a name = "dilute"></a></h2></a>
+<p><em>Instant withdrawals</em> protect DAO members from experiencing the outcome of proposals that they vehemently oppose. In the worst case scenario, a faction of the DAO that controls greater than the required threshold submits a proposal to grant themselves some ridiculous number of new shares, thereby diluting the shares of all other members (<em><a href="https://www.youtube.com/watch?v=Kk1sjbNcCxI">LOL</a></em>). The instant withdrawal mechanism enables the minority faction under attack to exit the DAO while preserving their share ownership (because they can exit during the grace period before the proposal's execution).</p>
+<p>Let's consider a more common scenario in which a contentious vote results in the exit of the opposing half, thereby increasing the funding burden on the remaining DAO members. For our example, let's assume that the DAO maintains 100 outstanding shares backed by 100M DOTs. If a new share is requested without posting any additional stake, and the vote is split 50/50 with 100% voter turnout, the 50 shares that voted against the proposal could leave during the grace period. Under this scenario, the funding burden for the remaining members increases from 1% to 2% (1/100 to 1/50) in accordance with share dilution.</p>
+<p>In fact, a larger proposal can lead to a run on the DAO (mass member exit) under the previously presented scenario. With this scenario in mind, we place an additional constraint on proposals: <strong>if a proposal's passage instigates member exit indicative of significant dilution, it shall not pass!</strong> This protects the DAO against scenarios in which a contentious vote leaves a small subset of the DAO significantly diluted.</p>
+<p>The invocation of this safety mechanism is predicated on the surrounding circumstances so we will halt any large proposal when mass member exit has made share issuance particularly dilutive. With this in mind, we can bound dilution for yes voters in the <code>vote</code> function. For every <code>yes</code> vote in which <code>approve == true</code>, we reset <code>proposal.maxVotes</code> to <code>total_shares</code> if <code>total_shares</code> has increased.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module::vote()`
+if approve {
+    Self::voters_for::mutate(hash, |voters| voters.push(&amp;who));
+    Self::proposals_for::mutate(&amp;who, |props| props.push(hash));
+    Self::voter_id::mutate(hash, |voters| voters.push(&amp;who));
+    Self::vote_of::insert(&amp;(hash, who), true);
+
+    // to bound dilution for yes votes
+    if Self::total_shares::get() &gt; proposal.maxVotes {
+        proposal.maxVotes = Self::total_shares::get();
+    }
+    proposal.yesVotes += Self::member_shares(&amp;who);
+
+} else {
+    proposal.noVotes += Self::member_shares(&amp;who);
+}
+#}</code></pre></pre>
+<p>With this logic placed in <code>vote</code>, we can safeguard against aggressive dilution by preventing the passage of proposals that are particularly contentious:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module::process()` 
+/// if dilution bound not satisfied, wait until there are more shares before passing
+ensure!(
+    Self::total_shares::get().checked_mul(Self::dilution_bound::get()) &gt; proposal.maxVotes, 
+    &quot;Dilution bound not satisfied; wait until more shares to pass vote&quot;
+);
+#}</code></pre></pre>
+<a class="header" href="#extension-dynamic-dilution_bound-according-to-totalsharesrequested" id="extension-dynamic-dilution_bound-according-to-totalsharesrequested"><h3>Extension: Dynamic <code>dilution_bound</code> according to <code>TotalSharesRequested</code></h3></a>
+<p>We may be able to improve this design by noting how the number of outstanding requested shares, <code>TotalSharesRequested</code>, provides a proxy for share issuance demand. Likewise, we could include it as an input for our <code>DilutionBound</code> mechanism. However, parameterization is already relatively confusing! We'll pause there for now -- file an issue or reach out if you have any clever ideas to formalize this without arbitrarily feeding mechanism complexity :)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../advanced/safety.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../advanced/lock.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../advanced/safety.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../advanced/lock.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

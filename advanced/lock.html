@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Scheduling Collateralization - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="../setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="../setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="../setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="../storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="../storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="../storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="../event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="../event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="../event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="../event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="../module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="../testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="../testing/scaffolding.html"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="../advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="../advanced/safety.html"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="../advanced/incentive.html"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="../advanced/lock.html" class="active"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="../advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="../advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="../advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="../advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="../advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="../dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#scheduling-collateralization" id="scheduling-collateralization"><h1>Scheduling Collateralization</h1></a>
+<p>In the <a href="./incentive.html#sun">incentive design recipe</a>, we covered a common bonding pattern also found in the <a href="https://github.com/paritytech/substrate/tree/master/srml/staking"><code>srml/staking</code></a> and <a href="https://github.com/paritytech/substrate/tree/master/srml/council"><code>srml/council</code></a> modules which bonds capital via the <code>reserve =&gt; unreserve (=&gt;) transfer</code> pattern. This pattern works, but there is another way to lock up capital for a defined period of time when building with Substrate.</p>
+<p>In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, unspent outputs can be locked up until a defined future block. A similar pattern is exercised in the <a href="https://github.com/nczhu/collateral"><code>collateral</code></a> sample.</p>
+<ul>
+<li><a href="#lock">UTXO Locking</a></li>
+<li><a href="#collatz">Managing Collateral</a></li>
+</ul>
+<a class="header" href="#utxo-locking-a-name--locka" id="utxo-locking-a-name--locka"><h2>UTXO Locking <a name = "lock"></a></h2></a>
+<p>First, define an enum to distinguish between locked and unlocked UTXOs.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+/// A UTXO can be locked indefinitely or until a certain block height
+#[cfg_attr(feature = &quot;std&quot;, derive(Serialize, Deserialize, Debug))]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Encode, Decode, Hash)]
+pub enum LockStatus&lt;BlockNumber&gt; {
+    Locked,
+    LockedUntil(BlockNumber),
+}
+#}</code></pre></pre>
+<p>In <code>decl_storage</code>, define a map for specifying the locked UTXOs. This maps an unspent outputs public key (<code>H256</code>) to its <code>LockStatus</code>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+decl_storage {
+    trait Store for Module&lt;T: Trait&gt; as Utxo {
+        /// All UTXO that are locked
+        LockedOutputs: map H256 =&gt; Option&lt;LockStatus&lt;T::BlockNumber&gt;&gt;;
+    }
+}
+#}</code></pre></pre>
+<p>Specify a runtime function for adding UTXOs to the mapping. Before inserting an unspent output into the storage mapping, check that the UTXO exists and is not already locked.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn lock_utxo(hash: &amp;H256, until: Option&lt;T::BlockNumber&gt;) -&gt; Result {
+        ensure!(!&lt;LockedOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo is already locked&quot;);
+        ensure!(&lt;UnspentOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo does not exist&quot;);
+
+        if let Some(until) = until {
+            ensure!(
+                until &gt; &lt;system::Module&lt;T&gt;&gt;::block_number(),
+                &quot;block number is in the past&quot;
+            );
+            &lt;LockedOutputs&lt;T&gt;&gt;::insert(hash, LockStatus::LockedUntil(until));
+        } else {
+            &lt;LockedOutputs&lt;T&gt;&gt;::insert(hash, LockStatus::Locked);
+        }
+
+        Ok(())
+    }
+}
+#}</code></pre></pre>
+<p>Next, add a runtime function to unlock UTXOs.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn unlock_utxo(hash: &amp;H256) -&gt; Result {
+        ensure!(!&lt;LockedOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo is not locked&quot;);
+        &lt;LockedOutputs&lt;T&gt;&gt;::remove(hash);
+        Ok(())
+    }
+}
+#}</code></pre></pre>
+<p>Next, verify that all of the unspent outputs claimed by transaction inputs are not locked in the <code>check_transaction</code> runtime function.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn check_transaction(transaction: &amp;Transaction) -&gt; CheckResult&lt;'_&gt; {
+        for input in transaction.inputs.iter() {
+            // Fetch UTXO from the storage
+            if let Some(output) = &lt;UnspentOutputs&lt;T&gt;&gt;::get(&amp;input.parent_output) {
+                ensure!(
+                    !&lt;LockedOutputs&lt;T&gt;&gt;::exists(&amp;input.parent_output),
+                    &quot;utxo is locked&quot;
+                );
+            }
+        }
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#collateral-management-a-name--collatza" id="collateral-management-a-name--collatza"><h2>Collateral Management <a name = "collatz"></a></h2></a>
+<p><em>in progress :) -- see <a href="https://github.com/nczhu/collateral"><code>collateral</code></a> for a sneak peek of the recipe</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../advanced/incentive.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../advanced/ordering.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../advanced/incentive.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../advanced/ordering.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

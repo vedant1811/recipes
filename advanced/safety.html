@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Safety First - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="../setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="../setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="../setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="../storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="../storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="../storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="../event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="../event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="../event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="../event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="../module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="../testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="../testing/scaffolding.html"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="../advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="../advanced/safety.html" class="active"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="../advanced/incentive.html"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="../advanced/lock.html"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="../advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="../advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="../advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="../advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="../advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="../dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#safety-first" id="safety-first"><h1>Safety First</h1></a>
+<p>Unlike conventional software development kits that abstract away low-level decisions, Substrate grants developers fine-grain control over the underlying implementation. This approach fosters high-performance, modular applications. At the same time, it also demands increased attention from developers. To quote the <a href="https://knowyourmeme.com/memes/with-great-power-comes-great-responsibility">late Uncle Ben</a>, <strong>with great power comes great responsibility</strong>.</p>
+<p>Indeed, Substrate developers have to exercise incredible caution. The bare-metal control that they maintain over the runtime logic introduces new attack vectors. In the context of blockchains, the cost of bugs scale with the amount of capital secured by the application. Likewise, developers should <em>generally</em> abide by a few rules when building with Substrate. These rules may not hold in every situation; Substrate offers optimization in context.</p>
+<ol>
+<li><a href="#criteria">Module Development Criteria</a></li>
+<li><a href="#condition">Condition-Oriented Programming</a></li>
+<li><a href="#check">Common Necessary Checks</a></li>
+<li><a href="#qed">Logic Proofs</a></li>
+</ol>
+<a class="header" href="#module-development-criteria-a-name--criteriaa" id="module-development-criteria-a-name--criteriaa"><h2>Module Development Criteria <a name = "criteria"></a></h2></a>
+<ol>
+<li>
+<p>Modules should be independent pieces of code; if your module is tied to many other modules, it should be a smart contract. See the <a href="https://github.com/shawntabrizi/substrate-contracts-workshop">substrate-contracts-workshop</a> for more details with respect to smart contract programming on Substrate.</p>
+</li>
+<li>
+<p>It should not be possible for your code to panic after storage changes. Poor error handling in Substrate can <em>brick</em> the blockchain, rendering it useless thereafter. With this in mind, developers need to follow a <a href="https://www.tokendaily.co/blog/declarative-smart-contracts">declarative design pattern</a> in which checks are made at the top of function bodies before storage changes. This approach discourages unintended state changes, thereby facilitating auditability and better testing. In documentation, we refer to this pattern as declarative programming <code>&lt;=&gt;</code> <a href="#condition">condition-oriented programming</a> <code>&lt;=&gt;</code> verify first, write last.</p>
+</li>
+</ol>
+<p><strong>Bonus Reading</strong></p>
+<ul>
+<li><a href="https://www.parity.io/condition-oriented-programming/">Condition-Oriented Programming</a></li>
+<li><a href="https://www.tokendaily.co/blog/declarative-smart-contracts">Declarative Smart Contracts</a></li>
+</ul>
+<a class="header" href="#condition-oriented-programming-a-name--conditiona" id="condition-oriented-programming-a-name--conditiona"><h2>Condition-Oriented Programming <a name = "condition"></a></h2></a>
+<p>Within each runtime module function, it is important to perform all checks prior to any storage changes. When coding on most smart contract platforms, the stakes are lower because panics on contract calls will revert any storage changes. Conversely, Substrate requires greater attention to detail because mid-function panics will persist any prior changes made to storage.</p>
+<p><strong>Substrate developers should use <a href="https://crates.parity.io/srml_support/macro.ensure.html"><code>ensure!</code></a> checks at the top of each runtime function's logic to verify that all of the requisite checks pass before performing any storage changes.</strong> <em>Note that this is similar to <a href="https://ethereum.stackexchange.com/questions/15166/difference-between-require-and-assert-and-the-difference-between-revert-and-thro"><code>require()</code></a> checks at the top of function bodies in Solidity contracts.</em></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// from Sunshine/runtime/src/dao.rs propose method
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    let who = ensure_signed(origin)?;
+    // check that the sender is a member of the DAO
+    ensure!(Self::is_member(&amp;who), &quot;sponsor is not a member of Dao&quot;);
+
+    // check that too many shares aren't requested (100% is a high upper bound)
+    ensure!(shares &lt;= Self::total_shares(), &quot;too many shares requested&quot;);
+
+    // check that applicant doesn't have a pending application
+    ensure!(!(Self::applicants::exists(&amp;applicant)), &quot;applicant has pending application&quot;);
+
+    // check that the TokenTribute covers at least the `ProposalFee`
+    ensure!(Self::proposal_fee() &gt;= tokenTribute, 
+            &quot;The token tribute does not cover the applicant's required bond&quot;);
+    /// storage changes start here...
+}
+#}</code></pre></pre>
+<p>When a check needs to be made, but ownership of locally declared variables does not need to be persisted, the developer should create a local scope to test the required variant before proceeding. An example of this pattern is how the <a href="./unique.html">membership uniqueness</a> recipe verifies the nonexistence of duplicate UTXOs within closed scopes to minimize the persistence of <code>BTreeMap&lt;T&gt;</code>.</p>
+<p>For more in-depth explanations of this pattern, see the relevant section in the <a href="https://github.com/shawntabrizi/substrate-collectables-workshop/blob/master/3/buying-a-kitty.md#remember-verify-first-write-last">Substrate Collectables tutorial</a> as well as <a href="https://docs.substrate.dev/docs/tcr-tutorial-best-practices">Substrate Best Practices</a>. <em>This <a href="https://github.com/shawntabrizi/substrate-collectables-workshop/pull/55#discussion_r258147961">github comment</a> is also very useful for visualizing the <code>verify first, write last</code> pattern in practice.</em></p>
+<a class="header" href="#common-necessary-checks-a-name--checka" id="common-necessary-checks-a-name--checka"><h2>Common Necessary Checks <a name = "check"></a></h2></a>
+<p>There are a few common checks made at the top of module function bodies.</p>
+<ul>
+<li><a href="#overunder">Overflows/Underflows</a></li>
+<li><a href="#collision">Collision in Key-Value Maps</a></li>
+<li><a href="#signed">Verifying Signed Messages</a></li>
+</ul>
+<a class="header" href="#checking-for-overflowsunderflows-a-name--overundera" id="checking-for-overflowsunderflows-a-name--overundera"><h3>Checking for Overflows/Underflows <a name = "overunder"></a></h3></a>
+<p>We can use the <code>checked</code> traits in <a href="https://crates.parity.io/sr_primitives/traits/index.html">substrate-primitives</a> to protect against <a href="https://medium.com/@taabishm2/integer-overflow-underflow-and-floating-point-imprecision-6ba869a99033">overflow/underflow</a> when incrementing/decrementing objects in our runtime. To follow the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/2/tracking-all-kitties?id=checking-for-overflowunderflow">Substrat collectable tutorial example</a>, we use <a href="https://crates.parity.io/sr_primitives/traits/trait.CheckedAdd.html"><code>checked_add()</code></a> to safely handle the possibility of overflow when incremementing a global counter. <em>Note that this check is similar to <a href="https://ethereumdev.io/safemath-protect-overflows/"><code>SafeMath</code></a> in Solidity</em>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use runtime_primitives::traits::CheckedAdd;
+
+let all_people_count = Self::num_of_people();
+
+let new_all_people_count = all_people_count.checked_add(1).ok_or(&quot;Overflow adding a new person&quot;)?;
+#}</code></pre></pre>
+<p><a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or"><code>ok_or()</code></a> transforms an <code>Option</code> from <code>Some(value)</code> to <code>Ok(value)</code> or <code>None</code> to <code>Err(error)</code>. The <a href="https://doc.rust-lang.org/nightly/edition-guide/rust-2018/error-handling-and-panics/the-question-mark-operator-for-easier-error-handling.html"><code>?</code> operator</a> facilitates error propagation. In this case, using <code>ok_or()</code> is the same as writing</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let new_all_people_count = match all_people_count.checked_add(1) {
+    Some (c) =&gt; c,
+    None =&gt; return Err(&quot;Overflow adding a new person&quot;),
+};
+#}</code></pre></pre>
+<a class="header" href="#collision-in-key-value-maps-a-name--collisiona" id="collision-in-key-value-maps-a-name--collisiona"><h3>Collision in Key-Value Maps <a name = "collision"></a></h3></a>
+<p>Often times we may intend for keys to be unique identifiers that map to a specific storage item. In this case, it is necessary to check for collisions before adding new entries. Before adding a new item to the mapping, we can check if the unique id already has an associated storage item.</p>
+<p>In <a href="https://github.com/4meta5/SunshineDAO">SunshineDAO</a>, we use the hash of a proposal as the unique identifier in a <code>Proposals</code> map in the <code>decl_storage</code> block. Before adding a new proposal to the <code>Proposals</code> map, we check that the hash doesn't already have an associated value in the map. If it does, we do not allow subsequent storage changes because this would cause a key collision.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// decl_module{} in runtime/src/dao.rs
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    // check that a proposal associated with the given key does not already exist in the map
+    ensure!(!(Self::proposals::exists(&amp;prop.base_hash)), &quot;Key collision :(&quot;);
+    // .. more checks
+
+    //add proposal
+    Self::proposals::insert(prop.base_hash, prop);
+}
+#}</code></pre></pre>
+<p>For another example, see how the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/2/generating-random-data?id=checking-for-collision">Substrate collectables tutorial</a> covers this pattern.</p>
+<a class="header" href="#verifying-signed-messages-a-name--signeda" id="verifying-signed-messages-a-name--signeda"><h3>Verifying Signed Messages <a name = "signed"></a></h3></a>
+<p>It is often useful to designate some functions as permissioned and, therefore, accessible only by a defined group. In this case, we check that the transaction that invokes the runtime function is signed before verifying that the signature corresponds to a member of the permissioned set. In <a href="https://github.com/4meta5/SunshineDAO">SunshineDAO</a>, all of the runtime module functions can only be called by members of the DAO. At the top of every runtime module function, the following check is included.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let who = ensure_signed(origin)?;
+ensure!(Self::is_member(&amp;who), &quot;sponsor is not a member of Dao&quot;);
+#}</code></pre></pre>
+<p>To read more about checking for signed messages, see the relevant section in the <a href="https://shawntabrizi.github.io/substrate-collectables-workshop/#/1/storing-a-value?id=checking-for-a-signed-message">Substrate collectables tutorial</a>.</p>
+<a class="header" href="#logic-proofs-a-name--qeda" id="logic-proofs-a-name--qeda"><h2>Logic Proofs <a name = "qed"></a></h2></a>
+<p>Because Substrate grants bare-metal control to developers, certain code patterns can expose panics at runtime. As mentioned in (2) of <a href="#criteria">Module Development Criteria</a>, panics can cause irreversible storage changes, possibly even bricking the blockchain and rendering it useless.</p>
+<p>It is the responsibility of Substrate developers to ensure that the code doesn't panics after storage changes. In many cases, safety might be independently verified by the developer while writing the code. To facilitate auditability and better testing, Substrate developers should include a proof in an <code>.expect()</code> call that shows why the code's logic is safe and will not panic. Convention dictates formatting the call like so</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+&lt;Object&lt;T&gt;&gt;::method_call().expect(&quot;&lt;proof of safety&gt;; qed&quot;);
+#}</code></pre></pre>
+<p>You can find more examples of this pattern in the <a href="https://github.com/paritytech/substrate/search?q=expect">Substrate codebase</a>. Indeed, including logic proofs is very important for writing readable, well-maintained code. It comes as no surprise that this pattern is also discussed in the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/3/buying-a-kitty?id=remember-quotverify-first-write-lastquot">Substrate collectables tutorial</a>.</p>
+<blockquote>
+<p><em>QED stands for Quod Erat Demonstrandum which loosely translated means &quot;that which was to be demonstrated&quot;</em></p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../advanced/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../advanced/incentive.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../advanced/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../advanced/incentive.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

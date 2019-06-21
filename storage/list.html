@@ -1,0 +1,374 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>List - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="../setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="../setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="../setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="../storage/list.html" class="active"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="../storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="../storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="../storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="../event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="../event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="../event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="../event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="../module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="../testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="../testing/scaffolding.html"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="../advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="../advanced/safety.html"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="../advanced/incentive.html"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="../advanced/lock.html"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="../advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="../advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="../advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="../advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="../advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="../dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#implementing-lists-with-maps" id="implementing-lists-with-maps"><h1>Implementing Lists with Maps</h1></a>
+<p>Substrate does not natively support a list type since it may encourage dangerous habits. Unless explicitly guarded against, a list will add unbounded <code>O(n)</code> complexity to an operation that will only charge <code>O(1)</code> fees (<a href="https://rob-bell.net/2009/06/a-beginners-guide-to-big-o-notation/">Big O notation refresher</a>). This opens an economic attack vector on your chain. <em>To learn more about economic security, see <a href="../advanced/safety.html">Safety First</a>.</em></p>
+<p>Emulate a list with a mapping and a counter like so:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::{StorageValue, StorageMap};
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        TheList get(the_list): map u32 =&gt; T::AccountId;
+        TheCounter get(the_counter): u32;
+    }
+}
+#}</code></pre></pre>
+<p>This code allows us to store a list of participants in the runtime represented by <code>AccountId</code>s. Of course, this implementation leaves many unanswered questions such as</p>
+<ul>
+<li>How to add and remove elements?</li>
+<li>How to maintain order under mutating operations?</li>
+<li>How to verify that an element exists before removing/mutating it?</li>
+</ul>
+<p>This recipe answers those questions with snippets from relevant code samples:</p>
+<ul>
+<li><a href="#unbounded">Adding/Removing Elements in an Unordered List</a></li>
+<li><a href="#swappop">Swap and Pop for Ordered Lists</a></li>
+<li><a href="#linkedmap">Linked Map for Simplified Runtime Logic</a></li>
+</ul>
+<p><strong>Note</strong>: it is important to properly handle <a href="../advanced/safety.html#overunder">overflow/underflow</a> and verify <a href="../advanced/safety.html#check">other relevant conditions</a> when invoking this recipe</p>
+<a class="header" href="#addingremoving-elements-in-an-unbounded-list-a-name--unboundeda" id="addingremoving-elements-in-an-unbounded-list-a-name--unboundeda"><h2>Adding/Removing Elements in an Unbounded List <a name = "unbounded"></a></h2></a>
+<p>If the size of the list is not relevant, the implementation is straightforward.</p>
+<p>For example, let's say that there is a list of <code>proposal</code>s (maybe defined as a struct in the runtime). When a <code>proposal</code> expires, remove it from the list, but it is not necessary to update the indices of other <code>proposal</code>s that have been added. <em>Note that it is still necessary to <a href="../advanced/safety.html#collision">verify the existence</a> of proposals in the map before attempting access.</em></p>
+<p>Store the <code>proposal</code>s in a key-value mapping</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[cfg_attr(feature = &quot;std&quot;, derive(Serialize, Deserialize, Debug))]
+#[derive(Encode, Decode, Clone, PartialEq, Eq)]
+struct Proposal&lt;Hash&gt; {
+    details: Hash,
+}
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        Proposals get(proposals): map u32 =&gt; Proposal&lt;T::Hash&gt;;
+        LargestIndex get(largest_index): u32;
+    }
+}
+#}</code></pre></pre>
+<p>To add a <code>proposal</code>, increment the <code>largest_index</code> and insert a <code>proposal</code> at that index:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn add_proposal(hash: Hash) -&gt; Result {
+            // any necessary checks here
+
+            // instantiate new proposal
+            let prop = Proposal { details: hash.clone() };
+
+            // increment largest index
+            &lt;LargestIndex&lt;T&gt;&gt;::mutate(|count| count + 1);
+
+            // add a proposal at largest_index
+            let largest_index = Self::largest_index::get();
+            &lt;Proposals&lt;T&gt;&gt;::insert(largest_index, prop);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>To remove a <code>proposal</code>, call the <code>remove</code> method for the <code>StorageMap</code> type at the relevant index. In this case, it isn't necessary to update the indices of other <code>proposal</code>s; order is not relevant.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // any necessary checks here
+
+            // remove proposal at the given index
+            &lt;Proposals&lt;T&gt;&gt;::remove(index);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>Because the code doesn't update the indices of other <code>proposal</code>s in the map, it is necessary to verify a proposal's existence before removing it, mutating it, or performing any other operation.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// index is the `u32` that corresponds to the proposal in the `&lt;Proposals&lt;T&gt;&gt;` map
+ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;proposal does not exist at the provided index&quot;);
+#}</code></pre></pre>
+<a class="header" href="#swap-and-pop-for-ordered-lists-a-name--swappopa" id="swap-and-pop-for-ordered-lists-a-name--swappopa"><h2>Swap and Pop for Ordered Lists <a name = "swappop"></a></h2></a>
+<p>To preserve storage so that the list doesn't continue growing even after removing elements, invoke the <strong>swap and pop</strong> algorithm:</p>
+<ol>
+<li>swap the element to be removed with the element at the head of the <em>list</em> (the element with the highest index in the map)</li>
+<li>remove the element recently placed at the highest index</li>
+<li>decrement the <code>LargestIndex</code> value.</li>
+</ol>
+<p>Use the <em>swap and pop</em> algorithm to remove elements from the list.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // check that a proposal exists at the given index
+            ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;A proposal does not exist at this index&quot;);
+
+            let largest_index = Self::largest_index::get();
+            let proposal_to_remove = &lt;Proposals&lt;T&gt;&gt;::take(index);
+            // swap
+            if index != largest_index {
+                let temp = &lt;Proposals&lt;T&gt;&gt;::take(largest_index);
+                &lt;Proposals&lt;T&gt;&gt;::insert(index, temp);
+                &lt;Proposals&lt;T&gt;&gt;::insert(largest_index, proposal_to_remove);
+            }
+            // pop
+            &lt;Proposals&lt;T&gt;&gt;::remove(largest_index);
+            &lt;LargestIndex&lt;T&gt;&gt;::mutate(|count| count - 1);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p><em>Keep the same logic for inserting proposals (increment <code>LargestIndex</code> and insert the entry at the head of the list)</em></p>
+<a class="header" href="#linked-map-a-name--linkedmapa" id="linked-map-a-name--linkedmapa"><h3>Linked Map <a name = "linkedmap"></a></h3></a>
+<p>To trade performance for simpler code, utilize the <code>linked_map</code> data structure. By implementing <a href="https://crates.parity.io/srml_support/storage/trait.EnumerableStorageMap.html"><code>EnumarableStorageMap</code></a> in addition to <a href="https://crates.parity.io/srml_support/storage/trait.StorageMap.html"><code>StorageMap</code></a>, <code>linked_map</code> provides a method <code>head</code> which yields the head of the <em>list</em>, thereby making it unnecessary to also store the <code>LargestIndex</code>. The <code>enumerate</code> method also returns an <code>Iterator</code> ordered according to when <code>(key, value)</code> pairs were inserted into the map.</p>
+<p>To use <code>linked_map</code>, import <code>EnumerableStorageMap</code>. Here is the new declaration in the <code>decl_storage</code> block:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::{StorageMap, EnumerableStorageMap}; // no StorageValue necessary
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        Proposals get(proposals): linked_map u32 =&gt; Proposal&lt;T::Hash&gt;;
+        // no largest_index value necessary
+    }
+}
+#}</code></pre></pre>
+<p>Here is the new <code>remove_proposal</code> method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // check that a proposal exists at the given index
+            ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;A proposal does not exist at this index&quot;);
+
+            let head_index = Self::proposals::head();
+            let proposal_to_remove = &lt;Proposals&lt;T&gt;&gt;::take(index);
+            &lt;Proposals&lt;T&gt;&gt;::insert(index, &lt;Proposals&lt;T&gt;&gt;::get(head_index));
+            &lt;Proposals&lt;T&gt;&gt;::remove(head_index);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>The only caveat is that this implementation incurs some performance costs (vs solely using <code>StorageMap</code> and <code>StorageValue</code>) because <code>linked_map</code> heap allocates the entire map as an iterator in order to implement the <a href="https://crates.parity.io/srml_support/storage/trait.EnumerableStorageMap.html#tymethod.enumerate"><code>enumerate</code> method</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../storage/mapping.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../storage/structs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../storage/mapping.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../storage/structs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

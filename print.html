@@ -1,0 +1,2250 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="intro/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="intro/motivation.html"><strong aria-hidden="true">2.</strong> Motivation</a></li><li><a href="setup/index.html"><strong aria-hidden="true">3.</strong> Setting Up Substrate</a></li><li><ol class="section"><li><a href="setup/ui.html"><strong aria-hidden="true">3.1.</strong> Polkadot UI</a></li><li><a href="setup/chainspec.html"><strong aria-hidden="true">3.2.</strong> Minimal Configuration</a></li></ol></li><li><a href="storage/index.html"><strong aria-hidden="true">4.</strong> Storage Recipes</a></li><li><ol class="section"><li><a href="storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="storage/mapping.html"><strong aria-hidden="true">4.2.</strong> Mapping</a></li><li><a href="storage/list.html"><strong aria-hidden="true">4.3.</strong> List</a></li><li><a href="storage/structs.html"><strong aria-hidden="true">4.4.</strong> Generic Structs</a></li><li><a href="storage/arrays.html"><strong aria-hidden="true">4.5.</strong> Higher Order Arrays</a></li><li><a href="storage/string.html"><strong aria-hidden="true">4.6.</strong> String</a></li></ol></li><li><a href="event/index.html"><strong aria-hidden="true">5.</strong> Event Recipes</a></li><li><ol class="section"><li><a href="event/basic.html"><strong aria-hidden="true">5.1.</strong> Dummy Event</a></li><li><a href="event/adder.html"><strong aria-hidden="true">5.2.</strong> Adding Machine</a></li><li><a href="event/permissioned.html"><strong aria-hidden="true">5.3.</strong> Permissioned Function with Generic Event</a></li></ol></li><li><a href="module_menu/index.html"><strong aria-hidden="true">6.</strong> Module Menu</a></li><li><a href="testing/index.html"><strong aria-hidden="true">7.</strong> Testing</a></li><li><ol class="section"><li><a href="testing/scaffolding.html"><strong aria-hidden="true">7.1.</strong> Scaffolding</a></li></ol></li><li><a href="advanced/index.html"><strong aria-hidden="true">8.</strong> Advanced Patterns</a></li><li><ol class="section"><li><a href="advanced/safety.html"><strong aria-hidden="true">8.1.</strong> Safety First</a></li><li><a href="advanced/incentive.html"><strong aria-hidden="true">8.2.</strong> Incentive Design</a></li><li><a href="advanced/lock.html"><strong aria-hidden="true">8.3.</strong> Scheduling Collateralization</a></li><li><a href="advanced/ordering.html"><strong aria-hidden="true">8.4.</strong> Transaction Ordering</a></li><li><a href="advanced/inherent.html"><strong aria-hidden="true">8.5.</strong> Offline Interaction</a></li><li><a href="advanced/unique.html"><strong aria-hidden="true">8.6.</strong> Verifying Set Member Uniqueness</a></li><li><a href="advanced/conditionals.html"><strong aria-hidden="true">8.7.</strong> Robust Conditional Paths</a></li><li><a href="advanced/optimizations.html"><strong aria-hidden="true">8.8.</strong> Optimization Tricks</a></li></ol></li><li><a href="dessert/index.html"><strong aria-hidden="true">9.</strong> Open Source Dessert</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#cookin-with-substrate-" id="cookin-with-substrate-"><h1>Cookin' with Substrate 🍴😋🍴</h1></a>
+<p>Substrate Recipes is a collection of simple code patterns that demonstrate best practices when building blockchains with <strong><a href="https://github.com/paritytech/substrate">Substrate</a></strong>.</p>
+<p>This book is built with <a href="https://rust-lang-nursery.github.io/mdBook/continuous-integration.html">mdbook</a> and deployed via <a href="https://pages.github.com/">github pages</a>. The code used to build this book is <a href="https://github.com/substrate-developer-hub/recipes">open source</a> and <a href="https://github.com/substrate-developer-hub/recipes/blob/master/CONTRIBUTING.md">open for contributions</a>.</p>
+<a class="header" href="#thanks" id="thanks"><h3>Thanks</h3></a>
+<p>Thanks to the following for suggestions and content contribution: <a href="https://github.com/gautamdhameja">gautamdhameja</a>, <a href="https://github.com/JoshOrndorff">JoshyOrndoff</a>, <a href="https://github.com/joepetrowski">joepetrowski</a>, <a href="https://github.com/ltfschoen">ltfschoen</a>, <a href="https://github.com/nczhu">nczhu</a>, <a href="https://github.com/shawntabrizi">shawntabrizi</a></p>
+<a class="header" href="#license" id="license"><h3>License</h3></a>
+<p>This work is licensed under both the <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Share Attribution-ShareAlike 4.0 International License</a> and the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+<p><strong>Happy Coding :)</strong></p>
+<a class="header" href="#getting-started" id="getting-started"><h1>Getting Started</h1></a>
+<p>If you're here, you probably already know about <a href="https://github.com/paritytech/substrate">Substrate</a> and are ready to start building. If not, I recommend visiting the <a href="https://substrate.dev">official documentation</a>. For a high level overview, read these blog posts:</p>
+<ul>
+<li><a href="https://www.parity.io/what-is-substrate/">What is Substrate?</a></li>
+<li><a href="https://www.parity.io/substrate-in-a-nutshell/">Substrate in a nutshell</a></li>
+<li><a href="https://www.parity.io/a-brief-summary-of-everything-substrate-polkadot/">A brief summary of everything Substrate and Polkadot</a></li>
+</ul>
+<a class="header" href="#how-to-use-this-book" id="how-to-use-this-book"><h2>How to Use This Book</h2></a>
+<p>You can read the book chronologically or jump around. Personally, I prefer jumping around, but people learn in different ways :)</p>
+<p>Regardless of the approach you take, it is useful to recognize that <a href="https://youtu.be/05H4YsyPA-U?t=1789">coding is all about abstraction</a>. To accelerate your progress, I recommend skimming the patterns in this book, composing them into interesting projects, and abstracting your own unique recipes. Feel free to reach out for guidance on <a href="https://stackoverflow.com/questions/tagged/substrate">Stack Overflow</a> or in  the <a href="https://riot.im/app/#/room/#substrate-technical:matrix.org">Substrate technical Riot channel</a>.</p>
+<a class="header" href="#chefs-choice" id="chefs-choice"><h2>Chef's Choice</h2></a>
+<p>My favorite recipes include</p>
+<ul>
+<li><a href="../storage/mapping.html">Mapping</a></li>
+<li><a href="../storage/structs.html">Structs</a></li>
+<li><a href="../advanced/safety.html">Safety First</a></li>
+<li><a href="../advanced/incentive.html">Incentive Design</a></li>
+<li><a href="../advanced/optimizations.html">Optimization Tricks</a></li>
+</ul>
+<a class="header" href="#notable-substrate-tutorials-and-projects" id="notable-substrate-tutorials-and-projects"><h3>Notable Substrate Tutorials and Projects</h3></a>
+<p><strong><a href="https://github.com/substrate-developer-hub">Substrate Developer Hub</a></strong></p>
+<p>Before anything else, I'd recommend starting with the <a href="https://github.com/shawntabrizi/substrate-collectables-workshop">Substrate Collectables tutorial</a>; it'll help you hit the ground running with an interactive sample project.</p>
+<p>To learn more about how to build novel blockchains with Substrate, check out the <a href="https://github.com/nczhu/utxo-workshop">utxo-workshop</a>. Preparing for the <a href="https://youtu.be/Q3hjtHaB3rA?t=7">Sub0 workshop</a> taught me a lot of useful coding patterns in the context of Substrate (which are included in the advanced section e.g. <a href="../advanced/incentive.html">Incentive Design</a>, <a href="../advanced/lock.html">Scheduling Collateralization</a>, <a href="../advanced/ordering.html">Transaction Ordering</a>, and <a href="../advanced/conditionals.html">Robust Conditional Paths</a>).</p>
+<p>If interested in token-based mechanisms, look no further than the <a href="https://github.com/parity-samples/substrate-tcr">Substrate TCR</a>. The <a href="https://docs.substrate.dev/docs/building-a-token-curated-registry-dappchain-using-substrate">full tutorial</a> will teach you Substrate best practices.</p>
+<p>If interested in smart contracts on Substrate, check out the <a href="https://github.com/substrate-developer-hub/substrate-contracts-workshop">substrate-contracts-workshop</a>.</p>
+<a class="header" href="#prerequisites" id="prerequisites"><h1>Prerequisites</h1></a>
+<p>If you do not have <code>substrate</code> installed on your machine, run:</p>
+<pre><code class="language-bash">curl https://getsubstrate.io -sSf | bash
+</code></pre>
+<a class="header" href="#create-a-substrate-node-template" id="create-a-substrate-node-template"><h2>Create a Substrate Node Template</h2></a>
+<p>To start, create an instance of the <code>substrate-node-template</code> using the following command:</p>
+<pre><code class="language-bash">substrate-node-new substrate-example &lt;name&gt;
+</code></pre>
+<p>To extend the default implementation of the <code>substrate-node-template</code>, you will need to modify <code>substrate-example/runtime/src/lib.rs</code>.</p>
+<p>Add these two lines after the initial declarations:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+mod runtime_example;
+impl runtime_example::Trait for Runtime {}
+#}</code></pre></pre>
+<p>Modify the <code>construct_runtime!()</code> macro to include <code>RuntimeExample</code> at the end:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// lib.rs
+construct_runtime!(
+    pub enum Runtime with Log(InternalLog: DigestItem&lt;Hash, Ed25519AuthorityId&gt;) where
+        Block = Block,
+        NodeBlock = opaque::Block,
+        UncheckedExtrinsic = UncheckedExtrinsic
+    {
+        System: system::{default, Log(ChangesTrieRoot)},
+        Timestamp: timestamp::{Module, Call, Storage, Config&lt;T&gt;, Inherent},
+        Consensus: consensus::{Module, Call, Storage, Config&lt;T&gt;, Log(AuthoritiesChange), Inherent},
+        Aura: aura::{Module},
+        Indices: indices,
+        Balances: balances,
+        Sudo: sudo,
+        RuntimeExample: runtime_example::{Module, Call, Storage},
+    }
+);
+#}</code></pre></pre>
+<p>Finally, you need to create a new file called <code>runtime_example.rs</code> in the same folder as <code>lib.rs</code>.</p>
+<a class="header" href="#updating-your-runtime" id="updating-your-runtime"><h2>Updating Your Runtime</h2></a>
+<p>You can paste runtime samples from this Cookbook into the <code>runtime_examples.rs</code> file and compile the new runtime binaries with:</p>
+<pre><code class="language-bash">cd substrate-example
+cargo build --release
+</code></pre>
+<p>Delete the old chain before you start the new one</p>
+<pre><code class="language-bash">./target/release/substrate-example purge-chain --dev
+./target/release/substrate-example --dev
+</code></pre>
+<a class="header" href="#using-the-polkadot-ui-to-interact" id="using-the-polkadot-ui-to-interact"><h2>Using the Polkadot UI to Interact</h2></a>
+<p>To simplify interactions with the custom Substrate runtime, use the <a href="https://polkadot.js.org/apps/next/">Polkadot JS UI for Substrate</a>.</p>
+<p>By default, this UI is configured to interact with the public Substrate test-network BBQ Birch. To have it connect to your local node, simply go to:</p>
+<pre><code>Settings &gt; remote node/endpoint to connect to &gt; Local Node (127.0.0.1:9944)
+</code></pre>
+<p><img src="https://i.imgur.com/1FpB5aM.png" alt="A picture of the Polkadot UI Settings Tab" /></p>
+<p>If the UI connected successfully, you should be able to go to the <strong>Explorer</strong> tab and see the block production process running.</p>
+<p><img src="https://i.imgur.com/TXmM0cB.png" alt="A picture of the block production process running in Explorer tab" /></p>
+<p>You can then interact with your custom functions in the <strong>Extrinsics</strong> tab under <strong>runtimeExample</strong>:</p>
+<p><img src="https://i.imgur.com/JFXSaHw.png" alt="A picture of custom functions appearing in the Extrinsics tab" /></p>
+<a class="header" href="#viewing-storage-variables" id="viewing-storage-variables"><h3>Viewing Storage Variables</h3></a>
+<p>If you want to check the value of a storage variable that you created, you can go to:</p>
+<pre><code>Chain State &gt; runtimeExampleStorage &gt; (variable name)
+</code></pre>
+<p>From there you should be able to query the state of the variable. It may return <code>&lt;unknown&gt;</code> if the value has not been set yet.</p>
+<p><img src="https://i.imgur.com/JLoWxc3.png" alt="A picture of viewing a storage variable in the Polkadot UI" /></p>
+<a class="header" href="#viewing-events" id="viewing-events"><h3>Viewing Events</h3></a>
+<p>Some runtime examples below generate <code>Events</code> when functions are run. You can temporarily view these events in the <strong>Explorer</strong> tab under <strong>recent events</strong> if any get generated.</p>
+<p><img src="https://i.imgur.com/2jUtBUk.png" alt="A picture of an event getting generated in the Explorer tab" /></p>
+<a class="header" href="#wasm-runtime-upgrade" id="wasm-runtime-upgrade"><h3>WASM Runtime Upgrade</h3></a>
+<p>Rather than restarting your chain for each update, you can also do an in-place runtime upgrade using the Polkadot UI. If you do this, you will not get runtime messages appearing in your terminal, but you should be able to interact with the chain via the UI just fine. To perform the upgrade, go to:</p>
+<pre><code>Extrinsics &gt; Upgrade Key &gt; upgrade(new)
+</code></pre>
+<p>There, you can select the file icon and upload the wasm file generated when you run <code>./build.sh</code></p>
+<pre><code>substrate-example/runtime/wasm/target/wasm32-unknown-unknown/release/node_runtime.compact.wasm
+</code></pre>
+<p><img src="https://i.imgur.com/rujS3p6.png" alt="A picture of upgrading the Substrate runtime" /></p>
+<p>Once the upgrade is finalized, you should be able to refresh the UI and see your updates.</p>
+<a class="header" href="#minimal-blockchain-configuration" id="minimal-blockchain-configuration"><h1>Minimal Blockchain Configuration</h1></a>
+<p><a href="https://github.com/paritytech/substrate/tree/master/node">Substate Node</a> is Substrate's pre-baked blockchain client. By creating and modifying a Substrate Node chain specification file, it is easy to configure a new chain and launch a corresponding testnet.</p>
+<p>To use the default chain that comes pre-configured with Substrate Node, enter the following command:</p>
+<pre><code class="language-bash">substrate build-spec --chain=staging &gt; ~/chainspec.json
+</code></pre>
+<p>Now, it is simple to modify <code>~/chainspec.json</code> in your editor. There are a lot of individual fields for each module, and one very large one which contains the Webassembly code blob for this chain. The most intuitive field to edit is the block <code>period</code>. Change it to 10 (seconds):</p>
+<pre><code class="language-json">    &quot;timestamp&quot;: {
+        &quot;period&quot;: 10
+    },
+</code></pre>
+<p>With this new chainspec file, the &quot;raw&quot; chain definition can be built for the new chain</p>
+<pre><code class="language-bash">substrate build-spec --chain ~/chainspec.json --raw &gt; ~/mychain.json
+</code></pre>
+<p>To feed this into Substrate</p>
+<pre><code class="language-bash">substrate --chain ~/mychain.json
+</code></pre>
+<p>Until a validator starts producing blocks, noting will happen. To start producing blocks, pass the <code>--validator</code> option alongside the seed for the account(s) that are configured as initial authorities.</p>
+<pre><code class="language-bash">substrate --chain ~/mychain.json --validator --key ...
+</code></pre>
+<p>Now, distribute <code>mychain.json</code> to the relevant authorities to synchronise and, depending on the list of authorities, validate the chain.</p>
+<a class="header" href="#storage" id="storage"><h1>Storage</h1></a>
+<p>Use the <a href="https://wiki.parity.io/decl_storage"><code>decl_storage</code></a> macro to define type-safe, persistent data that needs to be stored on-chain.</p>
+<p>For cryptocurrencies, storage might consist of a mapping between account keys and corresponding balances.</p>
+<p>More generally, blockchains provide an interface to store and interact with data in a verifiable and globally irreversible way. In this context, data is stored in a series of snapshots, each of which may be accessed at a later point in time, but, once created, snapshots are considered irreversible.</p>
+<p>Generally speaking, you may store arbitrary data, as long as its data type is serializable in Substrate i.e. implements <a href="https://docs.rs/parity-codec/3.1.0/parity_codec/trait.Encode.html"><code>Encode</code></a> and <a href="https://docs.rs/parity-codec/3.1.0/parity_codec/trait.Decode.html#foreign-impls"><code>Decode</code></a> traits.</p>
+<a class="header" href="#recipes" id="recipes"><h2>Recipes</h2></a>
+<ul>
+<li><a href="./value.html">Single Value</a></li>
+<li><strong><a href="./mapping.html">Mapping</a></strong></li>
+<li><a href="./list.html">List</a></li>
+<li><strong><a href="./structs.html">Structs</a></strong></li>
+<li><a href="./arrays.html">Higher Order Arrays</a></li>
+</ul>
+<p><em>Anti-Pattern</em></p>
+<ul>
+<li><a href="./string.html">String</a></li>
+</ul>
+<a class="header" href="#more-resources" id="more-resources"><h2>More Resources</h2></a>
+<ul>
+<li><a href="https://wiki.parity.io/decl_storage"><code>decl_storage</code> wiki docs</a></li>
+</ul>
+<a class="header" href="#single-value" id="single-value"><h1>Single Value</h1></a>
+<p>Substrate supports all primitive <a href="https://cheats.rs/">Rust types</a> (<code>bool</code>, <code>u8</code>, <code>u32</code>, etc) as well as some <a href="https://github.com/paritytech/oo7/blob/master/packages/oo7-substrate/src/types.js">custom types specific to Substrate</a> (<code>Hash</code>, <code>Balance</code>, <code>BlockNumber</code>, etc).</p>
+<ul>
+<li><a href="#basic">Basic Storage</a></li>
+<li><a href="#interact">Storage Interaction</a></li>
+<li><a href="#get">Getter Syntax</a></li>
+<li><a href="#set">Setter Syntax</a></li>
+<li><a href="#sub">Substrate Specific Types</a></li>
+</ul>
+<a class="header" href="#basic-storage-a-name--basica" id="basic-storage-a-name--basica"><h2>Basic Storage <a name = "basic"></a></h2></a>
+<p>Within a specific module, a single value (<code>u32</code> type) is stored in the runtime with this syntax:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        MyValue: u32;
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#storage-interaction-a-name--interacta" id="storage-interaction-a-name--interacta"><h2>Storage Interaction <a name = "interact"></a></h2></a>
+<p>To interact with single storage values, it is necessary to import the <code>support::StorageValue</code> type. Functions used to access a <code>StorageValue</code> are defined in <a href="https://github.com/paritytech/substrate/blob/master/srml/support/src/storage/generator.rs"><code>srml/support</code></a>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// Get the storage key.
+fn key() -&gt; &amp;'static [u8];
+
+/// true if the value is defined in storage.
+fn exists&lt;S: Storage&gt;(storage: &amp;S) -&gt; bool {
+    storage.exists(Self::key())
+}
+
+/// Load the value from the provided storage instance.
+fn get&lt;S: Storage&gt;(storage: &amp;S) -&gt; Self::Query;
+
+/// Take a value from storage, removing it afterwards.
+fn take&lt;S: Storage&gt;(storage: &amp;S) -&gt; Self::Query;
+
+/// Store a value under this key into the provided storage instance.
+fn put&lt;S: Storage&gt;(val: &amp;T, storage: &amp;S) {
+    storage.put(Self::key(), val)
+}
+
+/// Mutate this value
+fn mutate&lt;R, F: FnOnce(&amp;mut Self::Query) -&gt; R, S: Storage&gt;(f: F, storage: &amp;S) -&gt; R;
+
+/// Clear the storage value.
+fn kill&lt;S: Storage&gt;(storage: &amp;S) {
+    storage.kill(Self::key())
+}
+#}</code></pre></pre>
+<p>Therefore, the syntax to &quot;put&quot; <code>Value</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+&lt;MyValue&lt;T&gt;&gt;::put(1738);
+#}</code></pre></pre>
+<p>and to &quot;get&quot; <code>Value</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let my_val = &lt;MyValue&lt;T&gt;&gt;::get();
+#}</code></pre></pre>
+<a class="header" href="#getter-syntax-a-name--geta" id="getter-syntax-a-name--geta"><h2>Getter Syntax <a name = "get"></a></h2></a>
+<p>Storage values can also be declared with a <code>get</code> function to provide cleaner syntax for getting values.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        MyValue get(value_getter): u32;
+    }
+}
+#}</code></pre></pre>
+<p>The <code>get</code> parameter is optional, but, by including it, the module exposes a getter function (<code>fn value_getter() -&gt; u32</code>).</p>
+<p>To &quot;get&quot; the <code>Value</code> with the getter function</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let my_val = Self::value_getter();
+#}</code></pre></pre>
+<a class="header" href="#setter-syntax-a-name--seta" id="setter-syntax-a-name--seta"><h2>Setter Syntax <a name = "set"></a></h2></a>
+<p>Here is an example of a module that stores a <code>u32</code> value in runtime storage and provides a function <code>set_value</code> to set the given <code>u32</code>. This code follows <a href="https://deterministic.space/elegant-apis-in-rust.html#consistent-names">convention</a> for naming setters in Rust.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use srml_support::{StorageValue, dispatch::Result};
+
+pub trait Trait: system::Trait {}
+
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        fn set_value(origin, value: u32) -&gt; Result {
+            // check sender signature to verify permissions
+            let sender = ensure_signed(origin)?; 
+            &lt;MyValue&lt;T&gt;&gt;::put(value);
+            Ok(())
+        }
+    }
+}
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        MyValue: u32;
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#substrate-specific-types-a-name--suba" id="substrate-specific-types-a-name--suba"><h1>Substrate Specific Types <a name = "sub"></a></h1></a>
+<p>To access Substrate specific types, the module's <code>Trait</code> must inherit from the <a href="https://github.com/paritytech/substrate/tree/master/srml">SRML</a>. For example, to access the Substrate types <code>Hash</code>, <code>AccountId</code>, and <code>Balance</code>, it is sufficient to inherit the <a href="https://github.com/paritytech/substrate/tree/master/srml/balances"><code>balances</code></a> module:</p>
+<pre><code>pub trait Trait: balances::Trait {}
+</code></pre>
+<p>This provides access to the types <code>Hash</code>, <code>AccountId</code>, and <code>Balance</code> anywhere that specifies the generic <code>&lt;T: Trait&gt;</code> using <code>T::&lt;Type&gt;</code>.</p>
+<a class="header" href="#mapping" id="mapping"><h1>Mapping</h1></a>
+<p>Mappings are a very powerful primitive. A <em>stateful</em> cryptocurrency might store a mapping between accounts and balances (see <a href="#token">token example</a>). Likewise, mappings prove useful when representing <em>owned</em> data. By tracking ownership with maps, it is easy manage permissions for modifying values specific to individual users or groups.</p>
+<p>Within a specific module, a key-value mapping (between <code>u32</code> types) can be stored with this syntax:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        MyMap: map u32 =&gt; u32;
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#basic-interaction" id="basic-interaction"><h2>Basic Interaction</h2></a>
+<p>To interact with a storage map, it is necessary to import the <code>support::StorageMap</code> type. Functions used to access a <code>StorageValue</code> are defined in <a href="https://github.com/paritytech/substrate/blob/master/srml/support/src/storage/generator.rs"><code>srml/support</code></a>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// Get the prefix key in storage.
+fn prefix() -&gt; &amp;'static [u8];
+
+/// Get the storage key used to fetch a value corresponding to a specific key.
+fn key_for(x: &amp;K) -&gt; Vec&lt;u8&gt;;
+
+/// true if the value is defined in storage.
+fn exists&lt;S: Storage&gt;(key: &amp;K, storage: &amp;S) -&gt; bool {
+    storage.exists(&amp;Self::key_for(key)[..])
+}
+
+/// Load the value associated with the given key from the map.
+fn get&lt;S: Storage&gt;(key: &amp;K, storage: &amp;S) -&gt; Self::Query;
+
+/// Take the value under a key.
+fn take&lt;S: Storage&gt;(key: &amp;K, storage: &amp;S) -&gt; Self::Query;
+
+/// Store a value to be associated with the given key from the map.
+fn insert&lt;S: Storage&gt;(key: &amp;K, val: &amp;V, storage: &amp;S) {
+    storage.put(&amp;Self::key_for(key)[..], val);
+}
+
+/// Remove the value under a key.
+fn remove&lt;S: Storage&gt;(key: &amp;K, storage: &amp;S) {
+    storage.kill(&amp;Self::key_for(key)[..]);
+}
+
+/// Mutate the value under a key.
+fn mutate&lt;R, F: FnOnce(&amp;mut Self::Query) -&gt; R, S: Storage&gt;(key: &amp;K, f: F, storage: &amp;S) -&gt; R;
+#}</code></pre></pre>
+<p>To insert a <code>(key, value)</code> pair into a <code>StorageMap</code> named <code>MyMap</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+&lt;MyMap&lt;T&gt;&gt;::insert(key, value);
+#}</code></pre></pre>
+<p>To query <code>MyMap</code> for the <code>value</code> corresponding to a <code>key</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let value = &lt;MyMap&lt;T&gt;&gt;::get(key);
+#}</code></pre></pre>
+<a class="header" href="#simple-token-transfer-a-name--tokena" id="simple-token-transfer-a-name--tokena"><h2>Simple Token Transfer <a name = "token"></a></h2></a>
+<p>To implement a simple token transfer with Substrate,</p>
+<ol>
+<li>set total supply</li>
+<li>establish ownership upon configuration of circulating tokens</li>
+<li>coordinate token transfers with the runtime functions</li>
+</ol>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+  trait Store for Module&lt;T: Trait&gt; as Template {
+    pub TotalSupply get(total_supply): u64 = 21000000; // (1)
+
+    pub BalanceOf get(balance_of): map T::AccountId =&gt; u64; // (3)
+
+    Init get(is_init): bool; // (2)
+  }
+}
+#}</code></pre></pre>
+<p>Declare an event for when token transfers occur to notify clients</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_event!(
+    pub enum Event&lt;T&gt; where AccountId = &lt;T as system::Trait&gt;::AccountId {
+        // notifies upon token transfers
+        Transfer(AccountId, AccountId, u64), // (from, to, value)
+    }
+);
+#}</code></pre></pre>
+<p>Integrate business logic into the module</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+  pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+      // initialize the default event for this module
+      fn deposit_event&lt;T&gt;() = default;
+
+      // initialize the token
+      // transfers the total_supply amout to the caller
+      fn init(origin) -&gt; Result {
+        let sender = ensure_signed(origin)?;
+        ensure!(Self::is_init() == false, &quot;Already initialized.&quot;);
+
+        &lt;BalanceOf&lt;T&gt;&gt;::insert(sender, Self::total_supply());
+
+        &lt;Init&lt;T&gt;&gt;::put(true);
+
+        Ok(())
+      }
+
+      // transfer tokens from one account to another
+      fn transfer(_origin, to: T::AccountId, value: u64) -&gt; Result {
+        let sender = ensure_signed(_origin)?;
+        let sender_balance = Self::balance_of(sender.clone());
+        ensure!(sender_balance &gt;= value, &quot;Not enough balance.&quot;);
+
+        let updated_from_balance = sender_balance.checked_sub(value).ok_or(&quot;overflow in calculating balance&quot;)?;
+        let receiver_balance = Self::balance_of(to.clone());
+        let updated_to_balance = receiver_balance.checked_add(value).ok_or(&quot;overflow in calculating balance&quot;)?;
+        
+        // reduce sender's balance
+        &lt;BalanceOf&lt;T&gt;&gt;::insert(sender.clone(), updated_from_balance);
+
+        // increase receiver's balance
+        &lt;BalanceOf&lt;T&gt;&gt;::insert(to.clone(), updated_to_balance);
+
+        Self::deposit_event(RawEvent::Transfer(sender, to, value));
+        
+        Ok(())
+      }
+  }
+}
+#}</code></pre></pre>
+<p>s/o <a href="https://github.com/gautamdhameja/substrate-demo/blob/master/runtime/src/template.rs"><code>gautamdhameja/substrate-demo</code></a> for providing this recipe!</p>
+<a class="header" href="#implementing-lists-with-maps" id="implementing-lists-with-maps"><h1>Implementing Lists with Maps</h1></a>
+<p>Substrate does not natively support a list type since it may encourage dangerous habits. Unless explicitly guarded against, a list will add unbounded <code>O(n)</code> complexity to an operation that will only charge <code>O(1)</code> fees (<a href="https://rob-bell.net/2009/06/a-beginners-guide-to-big-o-notation/">Big O notation refresher</a>). This opens an economic attack vector on your chain. <em>To learn more about economic security, see <a href="../advanced/safety.html">Safety First</a>.</em></p>
+<p>Emulate a list with a mapping and a counter like so:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::{StorageValue, StorageMap};
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        TheList get(the_list): map u32 =&gt; T::AccountId;
+        TheCounter get(the_counter): u32;
+    }
+}
+#}</code></pre></pre>
+<p>This code allows us to store a list of participants in the runtime represented by <code>AccountId</code>s. Of course, this implementation leaves many unanswered questions such as</p>
+<ul>
+<li>How to add and remove elements?</li>
+<li>How to maintain order under mutating operations?</li>
+<li>How to verify that an element exists before removing/mutating it?</li>
+</ul>
+<p>This recipe answers those questions with snippets from relevant code samples:</p>
+<ul>
+<li><a href="#unbounded">Adding/Removing Elements in an Unordered List</a></li>
+<li><a href="#swappop">Swap and Pop for Ordered Lists</a></li>
+<li><a href="#linkedmap">Linked Map for Simplified Runtime Logic</a></li>
+</ul>
+<p><strong>Note</strong>: it is important to properly handle <a href="../advanced/safety.html#overunder">overflow/underflow</a> and verify <a href="../advanced/safety.html#check">other relevant conditions</a> when invoking this recipe</p>
+<a class="header" href="#addingremoving-elements-in-an-unbounded-list-a-name--unboundeda" id="addingremoving-elements-in-an-unbounded-list-a-name--unboundeda"><h2>Adding/Removing Elements in an Unbounded List <a name = "unbounded"></a></h2></a>
+<p>If the size of the list is not relevant, the implementation is straightforward.</p>
+<p>For example, let's say that there is a list of <code>proposal</code>s (maybe defined as a struct in the runtime). When a <code>proposal</code> expires, remove it from the list, but it is not necessary to update the indices of other <code>proposal</code>s that have been added. <em>Note that it is still necessary to <a href="../advanced/safety.html#collision">verify the existence</a> of proposals in the map before attempting access.</em></p>
+<p>Store the <code>proposal</code>s in a key-value mapping</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[cfg_attr(feature = &quot;std&quot;, derive(Serialize, Deserialize, Debug))]
+#[derive(Encode, Decode, Clone, PartialEq, Eq)]
+struct Proposal&lt;Hash&gt; {
+    details: Hash,
+}
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        Proposals get(proposals): map u32 =&gt; Proposal&lt;T::Hash&gt;;
+        LargestIndex get(largest_index): u32;
+    }
+}
+#}</code></pre></pre>
+<p>To add a <code>proposal</code>, increment the <code>largest_index</code> and insert a <code>proposal</code> at that index:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn add_proposal(hash: Hash) -&gt; Result {
+            // any necessary checks here
+
+            // instantiate new proposal
+            let prop = Proposal { details: hash.clone() };
+
+            // increment largest index
+            &lt;LargestIndex&lt;T&gt;&gt;::mutate(|count| count + 1);
+
+            // add a proposal at largest_index
+            let largest_index = Self::largest_index::get();
+            &lt;Proposals&lt;T&gt;&gt;::insert(largest_index, prop);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>To remove a <code>proposal</code>, call the <code>remove</code> method for the <code>StorageMap</code> type at the relevant index. In this case, it isn't necessary to update the indices of other <code>proposal</code>s; order is not relevant.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // any necessary checks here
+
+            // remove proposal at the given index
+            &lt;Proposals&lt;T&gt;&gt;::remove(index);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>Because the code doesn't update the indices of other <code>proposal</code>s in the map, it is necessary to verify a proposal's existence before removing it, mutating it, or performing any other operation.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// index is the `u32` that corresponds to the proposal in the `&lt;Proposals&lt;T&gt;&gt;` map
+ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;proposal does not exist at the provided index&quot;);
+#}</code></pre></pre>
+<a class="header" href="#swap-and-pop-for-ordered-lists-a-name--swappopa" id="swap-and-pop-for-ordered-lists-a-name--swappopa"><h2>Swap and Pop for Ordered Lists <a name = "swappop"></a></h2></a>
+<p>To preserve storage so that the list doesn't continue growing even after removing elements, invoke the <strong>swap and pop</strong> algorithm:</p>
+<ol>
+<li>swap the element to be removed with the element at the head of the <em>list</em> (the element with the highest index in the map)</li>
+<li>remove the element recently placed at the highest index</li>
+<li>decrement the <code>LargestIndex</code> value.</li>
+</ol>
+<p>Use the <em>swap and pop</em> algorithm to remove elements from the list.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // check that a proposal exists at the given index
+            ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;A proposal does not exist at this index&quot;);
+
+            let largest_index = Self::largest_index::get();
+            let proposal_to_remove = &lt;Proposals&lt;T&gt;&gt;::take(index);
+            // swap
+            if index != largest_index {
+                let temp = &lt;Proposals&lt;T&gt;&gt;::take(largest_index);
+                &lt;Proposals&lt;T&gt;&gt;::insert(index, temp);
+                &lt;Proposals&lt;T&gt;&gt;::insert(largest_index, proposal_to_remove);
+            }
+            // pop
+            &lt;Proposals&lt;T&gt;&gt;::remove(largest_index);
+            &lt;LargestIndex&lt;T&gt;&gt;::mutate(|count| count - 1);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p><em>Keep the same logic for inserting proposals (increment <code>LargestIndex</code> and insert the entry at the head of the list)</em></p>
+<a class="header" href="#linked-map-a-name--linkedmapa" id="linked-map-a-name--linkedmapa"><h3>Linked Map <a name = "linkedmap"></a></h3></a>
+<p>To trade performance for simpler code, utilize the <code>linked_map</code> data structure. By implementing <a href="https://crates.parity.io/srml_support/storage/trait.EnumerableStorageMap.html"><code>EnumarableStorageMap</code></a> in addition to <a href="https://crates.parity.io/srml_support/storage/trait.StorageMap.html"><code>StorageMap</code></a>, <code>linked_map</code> provides a method <code>head</code> which yields the head of the <em>list</em>, thereby making it unnecessary to also store the <code>LargestIndex</code>. The <code>enumerate</code> method also returns an <code>Iterator</code> ordered according to when <code>(key, value)</code> pairs were inserted into the map.</p>
+<p>To use <code>linked_map</code>, import <code>EnumerableStorageMap</code>. Here is the new declaration in the <code>decl_storage</code> block:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::{StorageMap, EnumerableStorageMap}; // no StorageValue necessary
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        Proposals get(proposals): linked_map u32 =&gt; Proposal&lt;T::Hash&gt;;
+        // no largest_index value necessary
+    }
+}
+#}</code></pre></pre>
+<p>Here is the new <code>remove_proposal</code> method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other methods
+
+        fn remove_proposal(index: u32) -&gt; Result {
+            // check that a proposal exists at the given index
+            ensure!(&lt;Proposals&lt;T&gt;&gt;::exists(index), &quot;A proposal does not exist at this index&quot;);
+
+            let head_index = Self::proposals::head();
+            let proposal_to_remove = &lt;Proposals&lt;T&gt;&gt;::take(index);
+            &lt;Proposals&lt;T&gt;&gt;::insert(index, &lt;Proposals&lt;T&gt;&gt;::get(head_index));
+            &lt;Proposals&lt;T&gt;&gt;::remove(head_index);
+
+            Ok(());
+        }
+    }
+}
+#}</code></pre></pre>
+<p>The only caveat is that this implementation incurs some performance costs (vs solely using <code>StorageMap</code> and <code>StorageValue</code>) because <code>linked_map</code> heap allocates the entire map as an iterator in order to implement the <a href="https://crates.parity.io/srml_support/storage/trait.EnumerableStorageMap.html#tymethod.enumerate"><code>enumerate</code> method</a>.</p>
+<a class="header" href="#generic-structs" id="generic-structs"><h1>Generic Structs</h1></a>
+<p>In Rust, a <code>struct</code>, or structure, is a custom a custom data type that lets you name and package together multiple related values that make up a meaningful group. If you’re familiar with an object-oriented language, a <code>struct</code> is like an object’s data attributes (read more in <a href="https://doc.rust-lang.org/book/ch05-01-defining-structs.html">The Rust Book</a>).</p>
+<p>To define a custom struct for the runtime, the following syntax may be used:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[derive(Encode, Decode, Default, Clone, PartialEq)]
+pub struct MyStruct&lt;A, B&gt; {
+    some_number: u32,
+    some_generic: A,
+    some_other_generic: B,
+}
+#}</code></pre></pre>
+<p>In the code snippet above, the <a href="https://doc.rust-lang.org/rust-by-example/trait/derive.html">derive macro</a> is declared to ensure <code>MyStruct</code> conforms to shared behavior according to the specified <a href="https://doc.rust-lang.org/book/ch10-02-traits.html">traits</a>: <code>Encode, Decode, Default, Clone, PartialEq</code></p>
+<p>To use the <code>Encode</code> and <code>Decode</code> traits, it is necessary to import them from the <code>parity_codec_derive</code> crate:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use parity_codec_derive::{Encode, Decode};
+#}</code></pre></pre>
+<p>By storing types in <code>MyStruct</code> as generics, it is possible to access custom Substrate types like <code>AccountId</code>, <code>Balance</code>, and <code>Hash</code>.</p>
+<p>For example, to store a mapping from <code>AccountId</code> to <code>MyStruct</code> with <code>some_generic</code> as the <code>Balance</code> type and <code>some_other_generic</code> as the <code>Hash</code> type:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as Example {
+        MyMap: map T::AccountId =&gt; MyStruct&lt;T::Balance, T::Hash&gt;;
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#basic-interaction-1" id="basic-interaction-1"><h2>Basic Interaction</h2></a>
+<p>To push values and modify the map</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        fn create_struct(origin, number: u32, balance: T::Balance, secret: T::Hash) -&gt; Result {
+            let sender = ensure_signed(origin)?;
+
+            let new_struct = MyStruct {
+                some_number: number,
+                some_generic: balance,
+                some_other_generic: secret,
+            };
+
+            &lt;MyMap&lt;T&gt;&gt;::insert(sender, new_struct);
+            Ok(())
+        }
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#nested-structs" id="nested-structs"><h2>Nested Structs</h2></a>
+<p>This basic runtime shows how to store custom, nested structs using a combination of Rust primitive types and Substrate specific types via generics.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use srml_support::{StorageMap, dispatch::Result};
+
+pub trait Trait: balances::Trait {}
+
+#[derive(Encode, Decode, Default)]
+pub struct Thing &lt;Hash, Balance&gt; {
+    my_num: u32,
+    my_hash: Hash,
+    my_balance: Balance,
+}
+
+#[derive(Encode, Decode, Default)]
+pub struct SuperThing &lt;Hash, Balance&gt; {
+    my_super_num: u32,
+    my_thing: Thing&lt;Hash, Balance&gt;,
+}
+
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        fn set_mapping(_origin, key: u32, num: u32, hash: T::Hash, balance: T::Balance) -&gt; Result {
+            let thing = Thing { 
+                            my_num: num, 
+                            my_hash: hash, 
+                            my_balance: balance
+                        };
+            &lt;Value&lt;T&gt;&gt;::insert(key, thing);
+            Ok(())
+        }
+
+        fn set_super_mapping(_origin, key: u32, super_num: u32, thing_key: u32) -&gt; Result {
+            let thing = Self::value(thing_key);
+            let super_thing = SuperThing { 
+                            my_super_num: super_num, 
+                            my_thing: thing
+                        };
+            &lt;SuperValue&lt;T&gt;&gt;::insert(key, super_thing);
+            Ok(())
+        }
+    }
+}
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as RuntimeExampleStorage {
+        Value get(value): map u32 =&gt; Thing&lt;T::Hash, T::Balance&gt;;
+        SuperValue get(super_value): map u32 =&gt; SuperThing&lt;T::Hash, T::Balance&gt;;
+    }
+}
+#}</code></pre></pre>
+<p>For more information, see the <a href="https://github.com/parity-samples/substrate-tcr/blob/master/runtime/src/tcr.rs">Substrate TCR</a> and the <a href="https://docs.substrate.dev/docs/building-a-token-curated-registry-dappchain-using-substrate">full tutorial</a></p>
+<a class="header" href="#ui-interaction" id="ui-interaction"><h2>UI Interaction</h2></a>
+<p>To access the value of the struct via the User Interface (UI), it is necessary to import the structure of the new type such that the UI understand how to decode it. See <a href="https://shawntabrizi.github.io/substrate-collectables-workshop/#/1/viewing-a-structure">Cryptokitties Collectables Tutorial</a> to configure accordingly with Polkadot UI or Substrate UI.</p>
+<p><em>Read more in the <a href="https://docs.substrate.dev/docs/substrate-runtime-recipes#section-polkadot-ui">official docs</a></em></p>
+<a class="header" href="#higher-order-arrays-with-tuples-and-maps" id="higher-order-arrays-with-tuples-and-maps"><h1>Higher Order Arrays with Tuples and Maps</h1></a>
+<p>To represent ownership of multiple items across multiple users, tuples can be used alongside maps in order to emulate arrays.</p>
+<p>For example, consider a scenario in which persistent storage keeps track of a <em>social network graph</em> in which each user (represented by an <code>AccountId</code>) has a list of other friends. In this case, it would be convenient to use a 2 dimensional array like</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+SocialNetwork[AccountId][Index] -&gt; AccountId
+#}</code></pre></pre>
+<p>With this data structure, check how many friends a given <code>AccountId</code> has by calling</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+SocialNetwork[AccountId].length()
+#}</code></pre></pre>
+<p>To emulate this data structure in the context of the Substrate runtime storage, use tuples and maps (declared in a <code>decl_storage!{}</code> block like previous examples):</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+SocialNetwork get(my_friend): map (T::AccountId, u32) =&gt; T::AccountId;
+SocialNetwork get(friends_count): map T::AccountId =&gt; u32;
+#}</code></pre></pre>
+<p>Patterns that use mappings to emulate higher order data structures are common when managing runtime storage on Substrate. <em>To see this pattern in action, see the <a href="https://shawntabrizi.github.io/substrate-collectables-workshop/#/2/owning-multiple-kitties?id=using-tuples-to-emulate-higher-order-arrays">Substrate Collectables Tutorial</a>.</em></p>
+<a class="header" href="#string-storage-as-bytemap-a-name--string-a" id="string-storage-as-bytemap-a-name--string-a"><h2>String Storage (as Bytemap) <a name = "string" ></a></h2></a>
+<p>Runtime storage is for storing the state of the business logic for which the runtime operates. If arbitrary storage must be stored in the runtime, it is better to create a bytearray(<code>Vec&lt;u8&gt;</code>). With that said, Substrate doesn't directly support <code>String</code>. To achieve the same functionality, it is better to store a hash to a service like IPFS to then use the hash to fetch data for the UI (<em>recipe coming soon!</em>).</p>
+<p>Here's a workaround to store a string in the runtime using JavaScript to convert the string to hex and back. You probably shouldn't do this...</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use srml_support::{StorageValue, dispatch::Result};
+use rstd::prelude::*;
+
+pub trait Trait: system::Trait {}
+
+decl_module! {
+  pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+    fn set_value(_origin, value: Vec&lt;u8&gt;) -&gt; Result {
+      &lt;Value&lt;T&gt;&gt;::put(value);
+      Ok(())
+    }
+  }
+}
+
+decl_storage! {
+  trait Store for Module&lt;T: Trait&gt; as RuntimeExampleStorage {
+    Value: Vec&lt;u8&gt;;
+  }
+}
+#}</code></pre></pre>
+<p>Store the string as a bytearray, which is inputted into the Polkadot UI as a hex string. These helper functions in JavaScript enable conversation from a string to hex and back, all in the browser console.</p>
+<pre><code class="language-javascript">function toHex(s) {
+    var s = unescape(encodeURIComponent(s))
+    var h = '0x'
+    for (var i = 0; i &lt; s.length; i++) {
+        h += s.charCodeAt(i).toString(16)
+    }
+    return h
+}
+
+function fromHex(h) {
+    var s = ''
+    for (var i = 0; i &lt; h.length; i+=2) {
+        s += String.fromCharCode(parseInt(h.substr(i, 2), 16))
+    }
+    return decodeURIComponent(escape(s))
+}
+</code></pre>
+<a class="header" href="#event" id="event"><h1>Event</h1></a>
+<p>In Substrate, <a href="https://docs.substrate.dev/docs/glossary#section-transaction">transaction</a> finality does not guarantee the execution of functions dependent on the given transaction. To verify that functions have executed successfully, emit an <a href="https://docs.substrate.dev/docs/glossary#section-events">event</a> at the bottom of the function body.</p>
+<blockquote>
+<p><strong>Events</strong> notify the off-chain world of successful state transitions</p>
+</blockquote>
+<p>To declare an event, use the <a href="https://crates.parity.io/srml_support/macro.decl_event.html"><code>decl_event</code></a> macro. See the <a href="./event/basic.html">Dummy Event</a> for more information regarding file structure and necessary inclusions in the runtime root <code>lib.rs</code>.</p>
+<a class="header" href="#recipes-1" id="recipes-1"><h2>Recipes</h2></a>
+<ul>
+<li><a href="./basic.html">Dummy Event</a></li>
+<li><a href="./adder.html">Adding Machine</a></li>
+<li><a href="./permissioned.html">Permissioned Generic Event</a></li>
+</ul>
+<a class="header" href="#more-resources-1" id="more-resources-1"><h2>More Resources</h2></a>
+<ul>
+<li><a href="https://wiki.parity.io/decl_event"><code>decl_event</code> wiki docs</a></li>
+<li><a href="https://shawntabrizi.github.io/substrate-collectables-workshop/#/2/creating-an-event">Substrate Collectables Tutorial: Creating Events</a></li>
+</ul>
+<a class="header" href="#dummy-event" id="dummy-event"><h1>Dummy Event</h1></a>
+<p>To declare an event, use the <a href="https://crates.parity.io/srml_support/macro.decl_event.html"><code>decl_event</code></a> macro</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in module file
+decl_event!(
+    pub enum Event&lt;T&gt; where B = &lt;T as balances::Trait&gt;::Balance {
+        Dummy(B),
+    }
+);
+#}</code></pre></pre>
+<p>The <code>Dummy</code> event uses the generic type <code>B = &lt;T as balances::Trait&gt;::Balance</code>.</p>
+<p>The <code>decl_event</code> macro generates an <code>Event</code> type which needs to be exposed in the module. This type inherits some traits</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in module file
+pub trait Trait: balances::Trait {
+    type Event: From&lt;Event&lt;Self&gt;&gt; to Into&lt;&lt;Self as system::Trait&gt;::Event&gt;;
+}
+#}</code></pre></pre>
+<p>To use events in the runtime, it is necessary to add a function to deposit the declared events. Within the <a href="https://crates.parity.io/srml_support/macro.decl_module.html"><code>decl_module</code></a> block, add a new function</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in module file, decl_module block
+fn deposit_event&lt;T&gt;() = default();
+#}</code></pre></pre>
+<p><strong>Note</strong>: If your event uses only Rust primitive types, then the generic <code>&lt;T&gt;</code> is unncesssary and can be omitted.</p>
+<p>After checking for the successful state transition in the body of a function, the requisite event should be deposited.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in module file, decl_module block
+pub fn accumulate_dummy(origin, increase_by: T::Balance) -&gt; Result {
+    // This is a public call, so we ensure that the origin is some signed account.
+    let _sender = ensure_signed(origin)?;
+
+    // use the `::get` on the storage item type itself
+    let dummy = &lt;Dummy&lt;T&gt;&gt;::get();
+
+    // Calculate the new value.
+    let new_dummy = dummy.map_or(increase_by, |dummy| dummy + increase_by);
+
+    // Put the new value into storage.
+    &lt;Dummy&lt;T&gt;&gt;::put(new_dummy);
+
+    // Deposit an event to let the outside world know this happened.
+    Self::deposit_event(RawEvent::Dummy(increase_by));
+
+    // All good.
+    Ok(())
+}
+#}</code></pre></pre>
+<p>Update the runtime root <code>lib.rs</code> file to include the new <code>Event&lt;T&gt;</code> type under the module's <code>Trait</code> implementation</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in root `lib.rs`
+impl mymodule::Trait for Runtime {
+    type Event = Event&lt;T&gt;;
+}
+#}</code></pre></pre>
+<p>Include the <code>Event&lt;T&gt;</code> type in the module's definition in the <a href="https://crates.parity.io/srml_support/macro.construct_runtime.html"><code>construct_runtime</code></a> macro block.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in root `lib.rs`
+construct_runtime!(
+    pub enum Runtime for Log(InteralLog: DigestItem&lt;Hash, Ed25519AuthorityId) where
+        Block = Block,
+        NodeBlock = opaque::Block,
+        InherentData = BasicInherentData
+    {
+        ...
+        MyModule: mymodule::{Module, Call, Storage, Event&lt;T&gt;},
+    }
+);
+#}</code></pre></pre>
+<a class="header" href="#adding-machine" id="adding-machine"><h1>Adding Machine</h1></a>
+<p>A simple adding machine which <a href="../advanced/safety.html#overunder">checks for overflow</a> and emits an event with the result, without using storage.</p>
+<p>First, modify <code>lib.rs</code>. Add <code>type Event = Event;</code> to the trait implementation and add <code>Event</code> to <a href="https://crates.parity.io/srml_support/macro.construct_runtime.html"><code>construct_runtime</code></a></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// root `lib.rs`
+impl runtime_example::Trait for Runtime {
+    type Event = Event;
+}
+
+...
+RuntimeExample: runtime_example::{Module, Call, Event},
+...
+#}</code></pre></pre>
+<p>In the module file</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// module file `runtime_example.rs`
+use srml_support::dispatch::Result;
+
+pub trait Trait: system::Trait {
+    type Event: From&lt;Event&gt; + Into&lt;&lt;Self as system::Trait&gt;::Event&gt;;
+}
+
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        fn deposit_event() = default;
+
+        fn add(_origin, val1: u32, val2: u32) -&gt; Result {
+            // checks for overflow
+            let result = match val1.checked_add(val2) {
+                Some(r) =&gt; r,
+                None =&gt; return Err(&quot;Addition overflowed&quot;),
+            };
+            Self::deposit_event(Event::Added(val1, val2, result));
+            Ok(())
+        }
+    }
+}
+
+decl_event!(
+    pub enum Event {
+        Added(u32, u32, u32),
+    }
+);
+#}</code></pre></pre>
+<a class="header" href="#permissioned-function-with-generic-event" id="permissioned-function-with-generic-event"><h1>Permissioned Function with Generic Event</h1></a>
+<p>This recipe contains a permissioned function which can only be called by the &quot;owner&quot;. An event is emitted when the function is successfully executed.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use srml_support::{StorageValue, dispatch::Result};
+use system::ensure_signed;
+
+pub trait Trait: system::Trait {
+    type Event: From&lt;Event&lt;Self&gt;&gt; + Into&lt;&lt;Self as system::Trait&gt;::Event&gt;;
+}
+
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        fn deposit_event&lt;T&gt;() = default;
+
+        fn init_ownership(origin) -&gt; Result {
+            ensure!(!&lt;Owner&lt;T&gt;&gt;::exists(), &quot;Owner already exists&quot;);
+            let sender = ensure_signed(origin)?;
+            &lt;Owner&lt;T&gt;&gt;::put(&amp;sender);
+            Self::deposit_event(RawEvent::OwnershipTransferred(sender.clone(), sender));
+            Ok(())
+        }
+
+        fn transfer_ownership(origin, newOwner: T::AccountId) -&gt; Result {
+            let sender = ensure_signed(origin)?;
+            ensure!(sender == Self::owner(), &quot;This function can only be called by the owner&quot;);
+            &lt;Owner&lt;T&gt;&gt;::put(&amp;newOwner);
+            Self::deposit_event(RawEvent::OwnershipTransferred(sender, newOwner));
+            Ok(())
+        }
+    }
+}
+
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as RuntimeExampleStorage {
+        Owner get(owner): T::AccountId;
+    }
+}
+
+decl_event!(
+    pub enum Event&lt;T&gt; where AccountId = &lt;T as system::Trait&gt;::AccountId {
+        OwnershipTransferred(AccountId, AccountId),
+    }
+);
+#}</code></pre></pre>
+<a class="header" href="#module-menu" id="module-menu"><h1>Module Menu</h1></a>
+<p>The <a href="https://docs.substrate.dev/docs/srml-overview">official Substrate documentation</a> provides a comprehensive overview of the Substrate runtime module libraries. Although modules are designed to be stand-alone, the modules in the <a href="https://github.com/paritytech/substrate/tree/master/srml">Substrate Runtime Module Library</a> provide useful code patterns that are applicable to many applications leveraging the framework.</p>
+<p>Unlike in smart contract development, the way to emulate these patterns is not to directly utilize these modules. Instead, the best approach either implements the same logic in the new context or utilizes a trait from <a href="https://github.com/paritytech/substrate/blob/master/srml/support/src/traits.rs"><code>srml/support</code></a> to guide the new implementation. As an example of the latter, consider how <code>Currency</code> is used in the <a href="../advanced/incentive.html">bonding example with <code>Balances</code></a>. By abstracting shared behavior from the runtime modules into <a href="https://github.com/paritytech/substrate/blob/master/srml/support/src/traits.rs"><code>srml/support</code></a>, Substrate makes it easy to extract and enforce best practices in the unique runtime. You can find the trait documentation <a href="https://crates.parity.io/srml_support/traits/index.html">here</a>.</p>
+<a class="header" href="#module-tour" id="module-tour"><h2>Module Tour</h2></a>
+<ul>
+<li><a href="https://crates.parity.io/srml_aura/index.html">Aura</a> - manages offline reporting for Aura consensus</li>
+<li><strong><a href="https://crates.parity.io/srml_balances/index.html">Balances</a></strong> - handles accounts and balances</li>
+<li><a href="https://crates.parity.io/srml_consensus/index.html">Consensus</a> - manages the authority set for the native code</li>
+<li><a href="https://crates.parity.io/srml_contract/index.htmlt">Contract</a> - functionality for the runtime to deploy and execute WebAssembly smart contracts</li>
+<li><strong><a href="https://crates.parity.io/srml_council/index.html">Council</a></strong> - handles voting and maintenance of council members</li>
+<li><strong><a href="https://crates.parity.io/srml_democracy/index.html">Democracy</a></strong> - handles administration of general stakeholder voting</li>
+<li><a href="https://crates.parity.io/srml_executive/index.html">Executive</a> - dispatches incoming extrinsic calls to the respective modules in the runtime</li>
+<li><a href="https://crates.parity.io/srml_grandpa/index.html">Grandpa</a> - manages the GRANDPA authority set ready for the native code</li>
+<li><a href="https://crates.parity.io/srml_indices/index.html">Indices</a> - an index is a short form of an address; this module handles allocation of indices for a newly created accounts</li>
+<li><a href="https://crates.parity.io/srml_session/index.html">Session</a> - allows validators to manage their session keys, provides a function for changing the session length, and handles session rotation</li>
+<li><strong><a href="https://crates.parity.io/srml_staking/index.html">Staking</a></strong> - manage funds at stake by network maintainers</li>
+<li><a href="https://crates.parity.io/srml_sudo/index.html">Sudo</a> - allows a single account to execute dispatchable functions</li>
+<li><a href="https://crates.parity.io/srml_system/index.html">System</a> - low-level access to core types and cross-cutting utilities</li>
+<li><a href="https://crates.parity.io/srml_timestamp/index.html">Timestamp</a> - get and set the on-chain time</li>
+<li><a href="https://crates.parity.io/srml_treasury/index.html">Treasury</a> - keeps account of currency in a <code>pot</code> and manages the subsequent deployment of these funds</li>
+</ul>
+<a class="header" href="#testing-substrate" id="testing-substrate"><h1>Testing Substrate</h1></a>
+<p>Although the Rust compiler ensures safe memory management, it cannot formally verify the correctness of a program's logic. Fortunately, Rust also comes with a convenient suite for writing unit and integration tests. When you initiate code with Cargo, test scaffolding is automatically generated to simplify the developer experience. Testing concepts and syntax are covered in depth in <a href="https://doc.rust-lang.org/book/ch11-00-testing.html">Chapter 11 of the Rust Book</a>.</p>
+<ul>
+<li><a href="./scaffolding.html">Scaffolding</a></li>
+</ul>
+<p>There's also more rigorous testing systems ranging from mocking and fuzzing to formal verification. Once best practices for these patterns starts to become clear in the context of Substrate, related recipes will be added.</p>
+<a class="header" href="#scaffolding" id="scaffolding"><h2>Scaffolding</h2></a>
+<p>To test a module in the context of Substrate, there is bit more work required to set up our testing environment. Here, we'll introduce one scaffolding design pattern to test a module. If you just want the code, you can just use the <code>mod test{}</code> at the bottom of the <a href="https://github.com/shawntabrizi/substrate-package/blob/master/substrate-node-template/runtime/src/template.rs">Substrate Node Template</a>. However, because most modules require some custom configuration, it is useful to understand the components that comprise the scaffolding.</p>
+<p>Before we dive in, create a <code>mock.rs</code> and <code>test.rs</code> file in the runtime directory (<a href="https://github.com/shawntabrizi/substrate-package/blob/master/substrate-node-template/runtime/src/">here</a>). At the top of <code>mock.rs</code> and <code>test.rs</code>, include the following compilation flag:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#![cfg(test)]
+#fn main() {
+#}</code></pre></pre>
+<p>This basically tells the compiler to only run the tests if the <a href="https://doc.rust-lang.org/cargo/guide/tests.html"><code>cargo test</code></a> command is invoked. For more information on this syntax, check out the <a href="https://doc.rust-lang.org/reference/attributes.html#conditional-compilation">Rust reference guide</a> as well as <a href="https://os.phil-opp.com/unit-testing/">this unit testing tutorial by Philipp Oppermann</a>. Within the <code>mock.rs</code> file, we include the following imports</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use primitives::{BuildStorage, traits::IdentityLookup, testing::{Digest, DigestItem, Header, UintAuthorityId}};
+use srml_support::impl_outer_origin;
+use runtime_io;
+use substrate_primitives::{H256, Blake2Hasher};
+#}</code></pre></pre>
+<p>It is also necessary to import the module configuration traits. For this recipe,  import <code>Module</code> and <code>Trait</code>. We may also import <code>GenesisConfig</code> if some storage items are set to be configured in the genesis block (marked with <code>config()</code> in the <code>decl_storage</code> block).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use crate::{GenesisConfig, Module, Trait};
+#}</code></pre></pre>
+<a class="header" href="#constructing-a-mock-runtime" id="constructing-a-mock-runtime"><h3>Constructing a Mock Runtime</h3></a>
+<p>To test the module, construct a mock runtime. To do so, create a configuration type called <code>Test</code> which implements the configuration traits.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct Test;
+#}</code></pre></pre>
+<p>The <a href="https://doc.rust-lang.org/edition-guide/rust-2018/macros/custom-derive.html">derive attribute</a> ensures that you don't have to manually implement the <code>Clone, PartialEq, Eq, Debug</code> traits; the compiler does this for you thereby ensuring that the <code>Test</code> type conforms to the behavior of these traits.</p>
+<p>Even so, this doesn't work for all traits. Indeed, there are a few traits that require manual implementation to set up the testing environment in <code>test.rs</code>. In most case, these <em>implementations</em> are limited to specifying the type in your module that corresponds to the type in the imported module. For example, the <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs">Staking module</a> implements the <code>balances</code> trait in its <code>mock.rs</code> file like so:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl balances::Trait for Test {
+    type Balance = u64;
+    type OnFreeBalanceZero = Staking;
+    type OnNewAccount = ();
+    type Event = ();
+    type TransactionPayment = ();
+    type TransferPayment = ();
+    type DustRemoval = ();
+}
+#}</code></pre></pre>
+<blockquote>
+<p>If the configuration logic is not overly complicated, the pattern that follows below can be forgone and replaced with something like <a href="https://github.com/paritytech/substrate/blob/master/srml/aura/src/mock.rs">the test scaffolding in <code>srml/aura</code></a>.</p>
+</blockquote>
+<p>Next, define an <code>ExtBuilder</code> struct that contains the configuration items from your module. In <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>, this looks like</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub struct ExtBuilder {
+    existential_deposit: u64,
+    session_length: u64,
+    sessions_per_era: u64,
+    current_era: u64,
+    reward: u64,
+    validator_pool: bool,
+    nominate: bool,
+    validator_count: u32,
+    minimum_validator_count: u32,
+    fair: bool,
+}
+#}</code></pre></pre>
+<p>It is useful for testing purposes to define default configuration values for each of the struct's fields. There is a <a href="https://doc.rust-lang.org/std/default/trait.Default.html">derive macro</a> which could be invoked instead as an annotation on the <code>ExtBuilder</code> struct, but it assumes certain default values. From <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>,</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl Default for ExtBuilder {
+    fn default() -&gt; Self {
+        Self {
+            existential_deposit: 0,
+            session_length: 1,
+            sessions_per_era: 1,
+            current_era: 0,
+            reward: 10,
+            validator_pool: false,
+            nominate: true,
+            validator_count: 2,
+            minimum_validator_count: 0,
+            fair: true
+        }
+    }
+}
+#}</code></pre></pre>
+<p>To implement the relevant methods for <code>ExtBuilder</code>, convention dictates defining a function to set each configuration value like so</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl ExtBuilder {
+        pub fn existential_deposit(mut self, existential_deposit: u64) -&gt; Self {
+        self.existential_deposit = existential_deposit;
+        self
+    }
+    pub fn session_length(mut self, session_length: u64) -&gt; Self {
+        self.session_length = session_length;
+        self
+    }
+    pub fn sessions_per_era(mut self, sessions_per_era: u64) -&gt; Self {
+        self.sessions_per_era = sessions_per_era;
+        self
+    }
+    pub fn _current_era(mut self, current_era: u64) -&gt; Self {
+        self.current_era = current_era;
+        self
+    }
+    pub fn validator_pool(mut self, validator_pool: bool) -&gt; Self {
+        self.validator_pool = validator_pool;
+        self
+    }
+    pub fn nominate(mut self, nominate: bool) -&gt; Self {
+        self.nominate = nominate;
+        self
+    }
+    pub fn validator_count(mut self, count: u32) -&gt; Self {
+        self.validator_count = count;
+        self
+    }
+    pub fn minimum_validator_count(mut self, count: u32) -&gt; Self {
+        self.minimum_validator_count = count;
+        self
+    }
+    pub fn fair(mut self, is_fair: bool) -&gt; Self {
+        self.fair = is_fair;
+        self
+    }
+    // more code...
+}
+#}</code></pre></pre>
+<p>Next, define a <code>build</code> method for <code>ExtBuilder</code> to properly set all the configuration values in our runtime storage. If we are just using our default values, it is not more complicated than defining the following method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn build() -&gt; runtime_io::TestExternalities&lt;Blake2Hasher&gt; {
+    system::GenesisConfig::&lt;Test&gt;::default().build_storage().unwrap().0.into()
+}
+#}</code></pre></pre>
+<p>However, the logic for the <code>build</code> method in <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a> is slightly more complicated to allow for a diversity of testing scenarios.</p>
+<p>At the bottom of the <code>mock.rs</code> file, publicly declare all of the modules used in correspondence to the traits that were <em>implemented</em> for the <code>Test</code> struct. For <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking</code></a>,</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub type System = system::Module&lt;Test&gt;;
+pub type Balances = balances::Module&lt;Test&gt;;
+pub type Session = session::Module&lt;Test&gt;;
+pub type Timestamp = timestamp::Module&lt;Test&gt;;
+pub type Staking = Module&lt;Test&gt;;
+#}</code></pre></pre>
+<a class="header" href="#setting-up-the-testing-environment" id="setting-up-the-testing-environment"><h3>Setting up the Testing Environment</h3></a>
+<p>All of the types publicly declared at the bottom of <code>mock.rs</code> are imported in <code>test.rs</code> along with any other traits that will be used in the unit testing and any necessary comparison operators. <em>We're still using <a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/mock.rs"><code>srml/staking/src/mock.rs</code></a> for the example</em></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// don't forget this at the top of the file to indicate 
+// compilation only with the `cargo test` command
+#![cfg(test)]
+
+use super::*;
+use runtime_io::with_externalities;
+use phragmen;
+use primitives::PerU128;
+use srml_support::{assert_ok, assert_noop, assert_eq_uvec, EnumerableStorageMap}; // comparison operators
+use mock::{Balances, Session, Staking, System, Timestamp, Test, ExtBuilder, Origin}; // publicly declared types
+use srml_support::traits::{Currency, ReservableCurrency};
+#}</code></pre></pre>
+<a class="header" href="#advanced-patterns-" id="advanced-patterns-"><h1>🎉Advanced Patterns 🐰🎊</h1></a>
+<ul>
+<li><a href="./safety.html">Safety First</a></li>
+<li><a href="./incentive.html">Incentive Design</a></li>
+<li><a href="./lock.html">Scheduling Collateralization</a></li>
+<li><a href="./ordering.html">Transaction Ordering</a></li>
+<li><a href="./inherent.html">Offline Interaction</a></li>
+<li><a href="./unique.html">Verifying Set Member Uniqueness</a></li>
+<li><a href="./conditionals.html">Robust Conditional Paths</a></li>
+<li><a href="./optimizations.html">Optimization Tricks</a></li>
+</ul>
+<p><em>See the <a href="../main/library.html">dessert</a> for more code samples and open source projects</em></p>
+<a class="header" href="#safety-first" id="safety-first"><h1>Safety First</h1></a>
+<p>Unlike conventional software development kits that abstract away low-level decisions, Substrate grants developers fine-grain control over the underlying implementation. This approach fosters high-performance, modular applications. At the same time, it also demands increased attention from developers. To quote the <a href="https://knowyourmeme.com/memes/with-great-power-comes-great-responsibility">late Uncle Ben</a>, <strong>with great power comes great responsibility</strong>.</p>
+<p>Indeed, Substrate developers have to exercise incredible caution. The bare-metal control that they maintain over the runtime logic introduces new attack vectors. In the context of blockchains, the cost of bugs scale with the amount of capital secured by the application. Likewise, developers should <em>generally</em> abide by a few rules when building with Substrate. These rules may not hold in every situation; Substrate offers optimization in context.</p>
+<ol>
+<li><a href="#criteria">Module Development Criteria</a></li>
+<li><a href="#condition">Condition-Oriented Programming</a></li>
+<li><a href="#check">Common Necessary Checks</a></li>
+<li><a href="#qed">Logic Proofs</a></li>
+</ol>
+<a class="header" href="#module-development-criteria-a-name--criteriaa" id="module-development-criteria-a-name--criteriaa"><h2>Module Development Criteria <a name = "criteria"></a></h2></a>
+<ol>
+<li>
+<p>Modules should be independent pieces of code; if your module is tied to many other modules, it should be a smart contract. See the <a href="https://github.com/shawntabrizi/substrate-contracts-workshop">substrate-contracts-workshop</a> for more details with respect to smart contract programming on Substrate.</p>
+</li>
+<li>
+<p>It should not be possible for your code to panic after storage changes. Poor error handling in Substrate can <em>brick</em> the blockchain, rendering it useless thereafter. With this in mind, developers need to follow a <a href="https://www.tokendaily.co/blog/declarative-smart-contracts">declarative design pattern</a> in which checks are made at the top of function bodies before storage changes. This approach discourages unintended state changes, thereby facilitating auditability and better testing. In documentation, we refer to this pattern as declarative programming <code>&lt;=&gt;</code> <a href="#condition">condition-oriented programming</a> <code>&lt;=&gt;</code> verify first, write last.</p>
+</li>
+</ol>
+<p><strong>Bonus Reading</strong></p>
+<ul>
+<li><a href="https://www.parity.io/condition-oriented-programming/">Condition-Oriented Programming</a></li>
+<li><a href="https://www.tokendaily.co/blog/declarative-smart-contracts">Declarative Smart Contracts</a></li>
+</ul>
+<a class="header" href="#condition-oriented-programming-a-name--conditiona" id="condition-oriented-programming-a-name--conditiona"><h2>Condition-Oriented Programming <a name = "condition"></a></h2></a>
+<p>Within each runtime module function, it is important to perform all checks prior to any storage changes. When coding on most smart contract platforms, the stakes are lower because panics on contract calls will revert any storage changes. Conversely, Substrate requires greater attention to detail because mid-function panics will persist any prior changes made to storage.</p>
+<p><strong>Substrate developers should use <a href="https://crates.parity.io/srml_support/macro.ensure.html"><code>ensure!</code></a> checks at the top of each runtime function's logic to verify that all of the requisite checks pass before performing any storage changes.</strong> <em>Note that this is similar to <a href="https://ethereum.stackexchange.com/questions/15166/difference-between-require-and-assert-and-the-difference-between-revert-and-thro"><code>require()</code></a> checks at the top of function bodies in Solidity contracts.</em></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// from Sunshine/runtime/src/dao.rs propose method
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    let who = ensure_signed(origin)?;
+    // check that the sender is a member of the DAO
+    ensure!(Self::is_member(&amp;who), &quot;sponsor is not a member of Dao&quot;);
+
+    // check that too many shares aren't requested (100% is a high upper bound)
+    ensure!(shares &lt;= Self::total_shares(), &quot;too many shares requested&quot;);
+
+    // check that applicant doesn't have a pending application
+    ensure!(!(Self::applicants::exists(&amp;applicant)), &quot;applicant has pending application&quot;);
+
+    // check that the TokenTribute covers at least the `ProposalFee`
+    ensure!(Self::proposal_fee() &gt;= tokenTribute, 
+            &quot;The token tribute does not cover the applicant's required bond&quot;);
+    /// storage changes start here...
+}
+#}</code></pre></pre>
+<p>When a check needs to be made, but ownership of locally declared variables does not need to be persisted, the developer should create a local scope to test the required variant before proceeding. An example of this pattern is how the <a href="./unique.html">membership uniqueness</a> recipe verifies the nonexistence of duplicate UTXOs within closed scopes to minimize the persistence of <code>BTreeMap&lt;T&gt;</code>.</p>
+<p>For more in-depth explanations of this pattern, see the relevant section in the <a href="https://github.com/shawntabrizi/substrate-collectables-workshop/blob/master/3/buying-a-kitty.md#remember-verify-first-write-last">Substrate Collectables tutorial</a> as well as <a href="https://docs.substrate.dev/docs/tcr-tutorial-best-practices">Substrate Best Practices</a>. <em>This <a href="https://github.com/shawntabrizi/substrate-collectables-workshop/pull/55#discussion_r258147961">github comment</a> is also very useful for visualizing the <code>verify first, write last</code> pattern in practice.</em></p>
+<a class="header" href="#common-necessary-checks-a-name--checka" id="common-necessary-checks-a-name--checka"><h2>Common Necessary Checks <a name = "check"></a></h2></a>
+<p>There are a few common checks made at the top of module function bodies.</p>
+<ul>
+<li><a href="#overunder">Overflows/Underflows</a></li>
+<li><a href="#collision">Collision in Key-Value Maps</a></li>
+<li><a href="#signed">Verifying Signed Messages</a></li>
+</ul>
+<a class="header" href="#checking-for-overflowsunderflows-a-name--overundera" id="checking-for-overflowsunderflows-a-name--overundera"><h3>Checking for Overflows/Underflows <a name = "overunder"></a></h3></a>
+<p>We can use the <code>checked</code> traits in <a href="https://crates.parity.io/sr_primitives/traits/index.html">substrate-primitives</a> to protect against <a href="https://medium.com/@taabishm2/integer-overflow-underflow-and-floating-point-imprecision-6ba869a99033">overflow/underflow</a> when incrementing/decrementing objects in our runtime. To follow the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/2/tracking-all-kitties?id=checking-for-overflowunderflow">Substrat collectable tutorial example</a>, we use <a href="https://crates.parity.io/sr_primitives/traits/trait.CheckedAdd.html"><code>checked_add()</code></a> to safely handle the possibility of overflow when incremementing a global counter. <em>Note that this check is similar to <a href="https://ethereumdev.io/safemath-protect-overflows/"><code>SafeMath</code></a> in Solidity</em>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use runtime_primitives::traits::CheckedAdd;
+
+let all_people_count = Self::num_of_people();
+
+let new_all_people_count = all_people_count.checked_add(1).ok_or(&quot;Overflow adding a new person&quot;)?;
+#}</code></pre></pre>
+<p><a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or"><code>ok_or()</code></a> transforms an <code>Option</code> from <code>Some(value)</code> to <code>Ok(value)</code> or <code>None</code> to <code>Err(error)</code>. The <a href="https://doc.rust-lang.org/nightly/edition-guide/rust-2018/error-handling-and-panics/the-question-mark-operator-for-easier-error-handling.html"><code>?</code> operator</a> facilitates error propagation. In this case, using <code>ok_or()</code> is the same as writing</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let new_all_people_count = match all_people_count.checked_add(1) {
+    Some (c) =&gt; c,
+    None =&gt; return Err(&quot;Overflow adding a new person&quot;),
+};
+#}</code></pre></pre>
+<a class="header" href="#collision-in-key-value-maps-a-name--collisiona" id="collision-in-key-value-maps-a-name--collisiona"><h3>Collision in Key-Value Maps <a name = "collision"></a></h3></a>
+<p>Often times we may intend for keys to be unique identifiers that map to a specific storage item. In this case, it is necessary to check for collisions before adding new entries. Before adding a new item to the mapping, we can check if the unique id already has an associated storage item.</p>
+<p>In <a href="https://github.com/4meta5/SunshineDAO">SunshineDAO</a>, we use the hash of a proposal as the unique identifier in a <code>Proposals</code> map in the <code>decl_storage</code> block. Before adding a new proposal to the <code>Proposals</code> map, we check that the hash doesn't already have an associated value in the map. If it does, we do not allow subsequent storage changes because this would cause a key collision.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// decl_module{} in runtime/src/dao.rs
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    // check that a proposal associated with the given key does not already exist in the map
+    ensure!(!(Self::proposals::exists(&amp;prop.base_hash)), &quot;Key collision :(&quot;);
+    // .. more checks
+
+    //add proposal
+    Self::proposals::insert(prop.base_hash, prop);
+}
+#}</code></pre></pre>
+<p>For another example, see how the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/2/generating-random-data?id=checking-for-collision">Substrate collectables tutorial</a> covers this pattern.</p>
+<a class="header" href="#verifying-signed-messages-a-name--signeda" id="verifying-signed-messages-a-name--signeda"><h3>Verifying Signed Messages <a name = "signed"></a></h3></a>
+<p>It is often useful to designate some functions as permissioned and, therefore, accessible only by a defined group. In this case, we check that the transaction that invokes the runtime function is signed before verifying that the signature corresponds to a member of the permissioned set. In <a href="https://github.com/4meta5/SunshineDAO">SunshineDAO</a>, all of the runtime module functions can only be called by members of the DAO. At the top of every runtime module function, the following check is included.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let who = ensure_signed(origin)?;
+ensure!(Self::is_member(&amp;who), &quot;sponsor is not a member of Dao&quot;);
+#}</code></pre></pre>
+<p>To read more about checking for signed messages, see the relevant section in the <a href="https://shawntabrizi.github.io/substrate-collectables-workshop/#/1/storing-a-value?id=checking-for-a-signed-message">Substrate collectables tutorial</a>.</p>
+<a class="header" href="#logic-proofs-a-name--qeda" id="logic-proofs-a-name--qeda"><h2>Logic Proofs <a name = "qed"></a></h2></a>
+<p>Because Substrate grants bare-metal control to developers, certain code patterns can expose panics at runtime. As mentioned in (2) of <a href="#criteria">Module Development Criteria</a>, panics can cause irreversible storage changes, possibly even bricking the blockchain and rendering it useless.</p>
+<p>It is the responsibility of Substrate developers to ensure that the code doesn't panics after storage changes. In many cases, safety might be independently verified by the developer while writing the code. To facilitate auditability and better testing, Substrate developers should include a proof in an <code>.expect()</code> call that shows why the code's logic is safe and will not panic. Convention dictates formatting the call like so</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+&lt;Object&lt;T&gt;&gt;::method_call().expect(&quot;&lt;proof of safety&gt;; qed&quot;);
+#}</code></pre></pre>
+<p>You can find more examples of this pattern in the <a href="https://github.com/paritytech/substrate/search?q=expect">Substrate codebase</a>. Indeed, including logic proofs is very important for writing readable, well-maintained code. It comes as no surprise that this pattern is also discussed in the <a href="https://shawntabrizi.com/substrate-collectables-workshop/#/3/buying-a-kitty?id=remember-quotverify-first-write-lastquot">Substrate collectables tutorial</a>.</p>
+<blockquote>
+<p><em>QED stands for Quod Erat Demonstrandum which loosely translated means &quot;that which was to be demonstrated&quot;</em></p>
+</blockquote>
+<a class="header" href="#incentive-design" id="incentive-design"><h1>Incentive Design</h1></a>
+<blockquote>
+<p><strong>Progress cannot always be monotonic because solutions to problems create new problems</strong> -<em>Steven Pinker</em></p>
+</blockquote>
+<p>The first rule of incentive design is sometimes just <em>don't</em>. Human coordination does not always require explicit mechanisms guided by fees and reward payouts. In many cases, the mutual benefits of an interaction drive coordination; adding an explicit fee structure may be redundant and unnecessary.</p>
+<p>With that said, we haven't <em>really</em> scaled human coordination. Although the internet has facilitated communication across borders and timezones, the tragedy of the commons (aka free rider problem) still limits our ability to collaborate in groups larger than <a href="http://www.lifewithalacrity.com/2008/09/group-threshold.html">primitive thresholds</a>. If you're not immediately convinced, consider any (broken) system for provisioning public goods -- social security, humanitarian aid, immigration, education, or even blockchain infrastructure maintenance. <strong>Despite a relative abundance of resources, we consistently struggle to coordinate efficient and meaningful allocation to those in need.</strong></p>
+<p>By aligning stakeholder incentives through dynamic reward/fee structures, blockchain will catalyze human coordination on an increasingly global scale. Now, let's talk incentive design.</p>
+<ul>
+<li><a href="#hide">Minimizing Hidden Costs</a></li>
+<li><a href="#closed">Closed Incentive Loops</a></li>
+<li><a href="#utxo">Ex1. UTXO</a></li>
+<li><a href="#sun">Ex2. SunshineDAO</a></li>
+<li><a href="#dilute">Bonus: Dilution Safety for SunshineDAO</a></li>
+</ul>
+<a class="header" href="#minimizing-hidden-costs-a-name--hidea" id="minimizing-hidden-costs-a-name--hidea"><h2>Minimizing Hidden Costs <a name = "hide"></a></h2></a>
+<p>As Substrate developers, it is important to reflect on the <em>hidden costs</em> of our mechanisms and consider how to communicate these costs transparently to all active and potential users. Above all else, we do not want to create another system where the few that are familiar with the rules thrive while most struggle with basic interaction (<em>see modern capitalism</em>).</p>
+<p>To not repeat the mistakes of the past, it is important for us to recognize instances of abusive mechanism design. For this we may look no further than <a href="https://mises.org/library/how-central-banking-increased-inequality">inflation</a>. The <a href="https://www.aier.org/article/sound-money-project/cantillon-effects-and-money-neutrality">Cantillon Effect</a> describes the phenomenon wherein minting more currency benefits those that receive it first because market prices do not immediately reflect an increase in supply.</p>
+<blockquote>
+<p><em>The first recipient of the new supply of money is in the convenient position of being able to spend extra dollars before prices have increased. But whoever is last in line receives his share of new dollars after prices have increased. This is why when the Treasury’s deficit is monetized, inflation is referred to as a non-legislated tax. In these cases, the government has seized purchasing power (rather than physical bills) from its citizens without congressional approval.</em> ~ <a href="https://www.aier.org/article/sound-money-project/cantillon-effects-and-money-neutrality">Cantillon Effects and Monetary Neutrality</a></p>
+</blockquote>
+<p>This does NOT mean that inflation or central banks are inherently <em>evil</em>, but rather that we need to be increasingly wary of the dilutive effects of minting new tokens/shares/currency. To be clear, the problem is NOT that inflation enforces a tax on public wealth by extracting purchasing power, but rather that this action is entirely swept under the rug as <em>neutral</em> monetary policy. <strong>Hidden costs like inflation threaten the economic sovereignty of participants and discredit the mechanism's legitimacy.</strong></p>
+<p>Transparency isn't a criteria just because it's <em>the right way</em> to do things. Hidden costs increase complexity and add <a href="https://nakamotoinstitute.org/static/docs/micropayments-and-mental-transaction-costs.pdf">mental overhead</a>, thereby limiting the diversity of users and rendering simulation increasingly unrealistic.</p>
+<a class="header" href="#closed-incentive-loop-a-name--closeda" id="closed-incentive-loop-a-name--closeda"><h2>Closed Incentive Loop <a name = "closed"></a></h2></a>
+<p><strong>To minimize hidden costs like inflation, we structure incentives as a closed loop in which fees cover rewards.</strong></p>
+<p>Not every system follows this rule; Bitcoin incentivizes the sustained security of the blockchain by minting new UTXOs to the <em>winning</em> miner upon committing the discovered block. Ceteris paribus, this constant inflation deteriorates the purchasing power of other Bitcoin holders for every new block added to the chain, but, in practice, Bitcoin's price is <em>resistant</em> to changes in supply (at least in the short-term).</p>
+<p>By structuring mechanisms as closed incentive loops, we prioritize the economic sovereignty of passive actors.</p>
+<p>In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the difference between transaction inputs and outputs are distributed evenly among the validator set. In <a href="https://github.com/4meta5/SunshineDAO"><code>SunshineDAO</code></a>, we bond proposals for both the sponsor and the applicant to fund rewards for proposal processing. By paying for rewards with fees, neither of these examples rely on inflationary funding. This choice is preferrable as it minimizes the hidden costs to passive holders.</p>
+<ul>
+<li><a href="#utxo">UTXO Closed Loop</a></li>
+<li><a href="#sun">SunshineDAO Closed Loop</a></li>
+</ul>
+<p>At the same time, not all mechanisms that incorporate closed incentive loops are exempt from inflationary risks. The most obvious example in <a href="https://github.com/AmarRSingh/SunshineDAO">SunshineDAO</a> is the share dilution that occurs when <em>some</em> proposals are accepted and executed. As an example, grant proposals may request share ownership without committing stake above a transaction fee (the proposal fee). In this case, the minting of shares to execute the accepted proposal dilutes the ownership of existing members. Without making them explicitly aware of this possibility, the DAO risks volatility and collapse (<code>=&gt;</code> mass member exit).</p>
+<ul>
+<li><a href="#dilute">Dilution Safety Mechanism</a></li>
+</ul>
+<a class="header" href="#utxo-a-name--utxoa" id="utxo-a-name--utxoa"><h2>UTXO <a name = "utxo"></a></h2></a>
+<p>Substrate developers need to <strong>stay cognizant of the price paid for resource usage</strong> within the runtime. This can be unintuitive for smart contract developers who are accustomed to interacting with a sandboxed execution environment like the EVM.</p>
+<p>Indeed, Substrate is a bit more hands-on. When storage changes occur within a runtime function, they are not automatically reverted if the function panics thereafter. For this reason, it is imperative that any resource used by a transaction must explicitly be paid for within the module. For a more comprehensive explanation, check out <a href="https://docs.substrate.dev/docs/tcr-tutorial-best-practices">the tcr tutorial's best practices</a>: <em>If the resources used might be dependent on transaction parameters or pre-existing on-chain state, then your in-module fee structure must adapt accordingly.</em></p>
+<p>So how do we design a robust in-module fee structure? In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the difference between inputs and outputs for valid transactions is distributed evenly among the authority set. This pattern demonstrates one approach for incentivizing validation via a floating transaction fee which varies in cost according to the value of the native currency and the relative size/activity of the validator set.</p>
+<p>To properly incentivize the ecosystem's actors through the fee structure, the leftover value is distributed evenly among the authorities in the <code>spend_leftover</code> runtime function:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// uxto-workshop/runtime/src/utxo.rs `decl_module{}`
+/// Redistribute combined leftover value evenly among chain authorities
+fn spend_leftover(authorities: &amp;[H256]) {
+    let leftover = &lt;LeftoverTotal&lt;T&gt;&gt;::take();
+    let share_value: Value = leftover
+        .checked_div(authorities.len() as Value)
+        .ok_or(&quot;No authorities&quot;)
+        .unwrap();
+    if share_value == 0 { return }
+
+    let remainder = leftover
+        .checked_sub(share_value * authorities.len() as Value)
+        .ok_or(&quot;Sub underflow&quot;)
+        .unwrap();
+    &lt;LeftoverTotal&lt;T&gt;&gt;::put(remainder as Value);
+
+    for authority in authorities {
+        let utxo = TransactionOutput {
+            value: share_value,
+            pubkey: *authority,
+            salt: &lt;system::Module&lt;T&gt;&gt;::block_number().as_(),
+        };
+
+        let hash = BlakeTwo256::hash_of(&amp;utxo);
+
+        if !&lt;UnspentOutputs&lt;T&gt;&gt;::exists(hash) {
+            &lt;UnspentOutputs&lt;T&gt;&gt;::insert(hash, utxo);
+            runtime_io::print(&quot;leftover share sent to&quot;);
+            runtime_io::print(hash.as_fixed_bytes() as &amp;[u8]);
+        } else {
+            runtime_io::print(&quot;leftover share wasted due to hash collision&quot;);
+        }
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#sunshinedao-a-name--suna" id="sunshinedao-a-name--suna"><h2>SunshineDAO <a name = "sun"></a></h2></a>
+<blockquote>
+<p><em>Context</em>: SunshineDAO is a fund coordination DAO. Proposals to the DAO request share issuance and, optionally, stake capital. By burning shares, a member of the DAO redeems capital held by the DAO (in proportion to the number of shares they burn). For more information, see the <a href="https://github.come/4meta5/SunshineDAO">github</a>.</p>
+</blockquote>
+<p>Imagine that our DAO has a pool of pending proposals. Each proposal requires sponsorship by a member of the DAO. As more proposals are submitted, the pool's size increases, and it becomes more difficult for voting members to keep track of the current state. To alleviate state bloat, stale proposals that have not passed in the defined voting period must be removed from the pool and successful proposals should be executed. Moreover, a cost should be attached to proposal submissions to prevent spam.</p>
+<p>In summary, we need to guide actor incentives to</p>
+<ol>
+<li>sponsor proposals</li>
+<li>remove stale proposals</li>
+<li>process successful proposals</li>
+<li>mitigate proposal spam</li>
+</ol>
+<p>Fortunately, we can use <strong>(4)</strong> to fund <strong>(1)</strong>, <strong>(2)</strong>, and <strong>(3)</strong>, thereby constructing a closed incentive loop. Specifically, we require a bond (~<em>collateral</em>) from both the applicant and the sponsoring member to submit a proposal. Within the <code>decl_module</code> block, we have a <code>propose</code> function which includes the following logic.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn propose(origin, applicant: AccountId, shares: u32, tokenTribute: BalanceOf&lt;T&gt;) -&gt; Result {
+    let who = ensure_signed(origin)?;
+    ensure!(Self::is_member(&amp;who), &quot;proposer is not a member of Dao&quot;);
+
+    // reserve member's bond for proposal
+    T::Currency::reserve(&amp;who, Self::proposal_bond())
+        .map_err(|_| &quot;balance of proposer is too low&quot;)?;
+    // reserve applicant's tokenTribute for proposal
+    T::Currency::reserve(&amp;applicant, tokenTribute)
+        .map_err(|_| &quot;balance of applicant is too low&quot;)?;
+}
+#}</code></pre></pre>
+<p>If the proposal is aborted within a short period after submission, then the bonds can be returned without penalty.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn abort(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // check that the abort is within the window
+    ensure!(
+        proposal.startTime + Self::abort_window() &gt;= &lt;system::Module&lt;T&gt;&gt;::block_number(),
+        &quot;it is past the abort window&quot;
+    );
+
+    // return the proposalBond back to the proposer because they aborted
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // and the tokenTribute (&gt;= `proposalFee` amount) to the applicant
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+}
+#}</code></pre></pre>
+<p>However, if the proposal does not pass, then the bonds for both parties are transferred to the member that processes the proposal (thereby incentivizing <strong>(2)</strong> with our solution to <strong>(4)</strong>).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn process(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // IF NOT PASS
+    // transfer the proposalBond back to the proposer
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // transfer proposer's proposal bond to the processer
+    T::Currency::transfer(&amp;proposal.proposer, &amp;who, Self::proposal_bond());
+    // return the applicant's tokenTribute
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+    // transfer applicant's proposal fee to the processer
+    T::Currency::transfer(&amp;proposal.applicant, &amp;who, Self::proposal_fee());
+}
+#}</code></pre></pre>
+<p>If the proposal passes, the sponsor's bond is returned, and the applicant's bond is split between the sponsor and the processing member (<strong>(4)</strong> =&gt; <strong>(1)</strong>, <strong>(3)</strong>).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module{}`
+fn process(origin, hash: Vec&lt;u8&gt;) -&gt; Result {
+    // IF PASS
+    // transfer the proposalBond back to the proposer
+    T::Currency::unreserve(&amp;proposal.proposer, Self::proposal_bond());
+    // and the applicant's tokenTribute
+    T::Currency::unreserve(&amp;proposal.applicant, proposal.tokenTribute);
+
+    // split the proposal fee between the proposer and the processer
+    let txfee = Self::proposal_fee().checked_mul(0.5);
+    T::Currency::make_transfer(&amp;proposal.applicant, &amp;who, txfee);
+    T::Currency::make_transfer(&amp;proposal.applicant, &amp;proposal.proposer, txfee);
+}
+#}</code></pre></pre>
+<p>The basic bonding pattern used in this example follows this pattern:</p>
+<ul>
+<li>Bonding stake =&gt; <code>T::Currency::reserve</code></li>
+<li>Unbonding stake =&gt; <code>T::Currency::unreserve</code></li>
+<li>Transferring bond =&gt; <code>T::Currency::make_transfer</code></li>
+</ul>
+<p><em>NOTE: alternative to the <code>reserve =&gt; unreserve (=&gt;) transfer</code> bonding pattern is introduced in <a href="./lock.html">Scheduling Collateralization</a>.</em></p>
+<a class="header" href="#dilution-safety-mechanism-a-name--dilutea" id="dilution-safety-mechanism-a-name--dilutea"><h2>Dilution Safety Mechanism <a name = "dilute"></a></h2></a>
+<p><em>Instant withdrawals</em> protect DAO members from experiencing the outcome of proposals that they vehemently oppose. In the worst case scenario, a faction of the DAO that controls greater than the required threshold submits a proposal to grant themselves some ridiculous number of new shares, thereby diluting the shares of all other members (<em><a href="https://www.youtube.com/watch?v=Kk1sjbNcCxI">LOL</a></em>). The instant withdrawal mechanism enables the minority faction under attack to exit the DAO while preserving their share ownership (because they can exit during the grace period before the proposal's execution).</p>
+<p>Let's consider a more common scenario in which a contentious vote results in the exit of the opposing half, thereby increasing the funding burden on the remaining DAO members. For our example, let's assume that the DAO maintains 100 outstanding shares backed by 100M DOTs. If a new share is requested without posting any additional stake, and the vote is split 50/50 with 100% voter turnout, the 50 shares that voted against the proposal could leave during the grace period. Under this scenario, the funding burden for the remaining members increases from 1% to 2% (1/100 to 1/50) in accordance with share dilution.</p>
+<p>In fact, a larger proposal can lead to a run on the DAO (mass member exit) under the previously presented scenario. With this scenario in mind, we place an additional constraint on proposals: <strong>if a proposal's passage instigates member exit indicative of significant dilution, it shall not pass!</strong> This protects the DAO against scenarios in which a contentious vote leaves a small subset of the DAO significantly diluted.</p>
+<p>The invocation of this safety mechanism is predicated on the surrounding circumstances so we will halt any large proposal when mass member exit has made share issuance particularly dilutive. With this in mind, we can bound dilution for yes voters in the <code>vote</code> function. For every <code>yes</code> vote in which <code>approve == true</code>, we reset <code>proposal.maxVotes</code> to <code>total_shares</code> if <code>total_shares</code> has increased.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module::vote()`
+if approve {
+    Self::voters_for::mutate(hash, |voters| voters.push(&amp;who));
+    Self::proposals_for::mutate(&amp;who, |props| props.push(hash));
+    Self::voter_id::mutate(hash, |voters| voters.push(&amp;who));
+    Self::vote_of::insert(&amp;(hash, who), true);
+
+    // to bound dilution for yes votes
+    if Self::total_shares::get() &gt; proposal.maxVotes {
+        proposal.maxVotes = Self::total_shares::get();
+    }
+    proposal.yesVotes += Self::member_shares(&amp;who);
+
+} else {
+    proposal.noVotes += Self::member_shares(&amp;who);
+}
+#}</code></pre></pre>
+<p>With this logic placed in <code>vote</code>, we can safeguard against aggressive dilution by preventing the passage of proposals that are particularly contentious:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// SunshineDAO/runtime/src/dao.rs `decl_module::process()` 
+/// if dilution bound not satisfied, wait until there are more shares before passing
+ensure!(
+    Self::total_shares::get().checked_mul(Self::dilution_bound::get()) &gt; proposal.maxVotes, 
+    &quot;Dilution bound not satisfied; wait until more shares to pass vote&quot;
+);
+#}</code></pre></pre>
+<a class="header" href="#extension-dynamic-dilution_bound-according-to-totalsharesrequested" id="extension-dynamic-dilution_bound-according-to-totalsharesrequested"><h3>Extension: Dynamic <code>dilution_bound</code> according to <code>TotalSharesRequested</code></h3></a>
+<p>We may be able to improve this design by noting how the number of outstanding requested shares, <code>TotalSharesRequested</code>, provides a proxy for share issuance demand. Likewise, we could include it as an input for our <code>DilutionBound</code> mechanism. However, parameterization is already relatively confusing! We'll pause there for now -- file an issue or reach out if you have any clever ideas to formalize this without arbitrarily feeding mechanism complexity :)</p>
+<a class="header" href="#scheduling-collateralization" id="scheduling-collateralization"><h1>Scheduling Collateralization</h1></a>
+<p>In the <a href="./incentive.html#sun">incentive design recipe</a>, we covered a common bonding pattern also found in the <a href="https://github.com/paritytech/substrate/tree/master/srml/staking"><code>srml/staking</code></a> and <a href="https://github.com/paritytech/substrate/tree/master/srml/council"><code>srml/council</code></a> modules which bonds capital via the <code>reserve =&gt; unreserve (=&gt;) transfer</code> pattern. This pattern works, but there is another way to lock up capital for a defined period of time when building with Substrate.</p>
+<p>In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, unspent outputs can be locked up until a defined future block. A similar pattern is exercised in the <a href="https://github.com/nczhu/collateral"><code>collateral</code></a> sample.</p>
+<ul>
+<li><a href="#lock">UTXO Locking</a></li>
+<li><a href="#collatz">Managing Collateral</a></li>
+</ul>
+<a class="header" href="#utxo-locking-a-name--locka" id="utxo-locking-a-name--locka"><h2>UTXO Locking <a name = "lock"></a></h2></a>
+<p>First, define an enum to distinguish between locked and unlocked UTXOs.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+/// A UTXO can be locked indefinitely or until a certain block height
+#[cfg_attr(feature = &quot;std&quot;, derive(Serialize, Deserialize, Debug))]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Encode, Decode, Hash)]
+pub enum LockStatus&lt;BlockNumber&gt; {
+    Locked,
+    LockedUntil(BlockNumber),
+}
+#}</code></pre></pre>
+<p>In <code>decl_storage</code>, define a map for specifying the locked UTXOs. This maps an unspent outputs public key (<code>H256</code>) to its <code>LockStatus</code>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+decl_storage {
+    trait Store for Module&lt;T: Trait&gt; as Utxo {
+        /// All UTXO that are locked
+        LockedOutputs: map H256 =&gt; Option&lt;LockStatus&lt;T::BlockNumber&gt;&gt;;
+    }
+}
+#}</code></pre></pre>
+<p>Specify a runtime function for adding UTXOs to the mapping. Before inserting an unspent output into the storage mapping, check that the UTXO exists and is not already locked.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn lock_utxo(hash: &amp;H256, until: Option&lt;T::BlockNumber&gt;) -&gt; Result {
+        ensure!(!&lt;LockedOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo is already locked&quot;);
+        ensure!(&lt;UnspentOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo does not exist&quot;);
+
+        if let Some(until) = until {
+            ensure!(
+                until &gt; &lt;system::Module&lt;T&gt;&gt;::block_number(),
+                &quot;block number is in the past&quot;
+            );
+            &lt;LockedOutputs&lt;T&gt;&gt;::insert(hash, LockStatus::LockedUntil(until));
+        } else {
+            &lt;LockedOutputs&lt;T&gt;&gt;::insert(hash, LockStatus::Locked);
+        }
+
+        Ok(())
+    }
+}
+#}</code></pre></pre>
+<p>Next, add a runtime function to unlock UTXOs.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn unlock_utxo(hash: &amp;H256) -&gt; Result {
+        ensure!(!&lt;LockedOutputs&lt;T&gt;&gt;::exists(hash), &quot;utxo is not locked&quot;);
+        &lt;LockedOutputs&lt;T&gt;&gt;::remove(hash);
+        Ok(())
+    }
+}
+#}</code></pre></pre>
+<p>Next, verify that all of the unspent outputs claimed by transaction inputs are not locked in the <code>check_transaction</code> runtime function.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utxo-workshop/runtime/src/utxo.rs
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn check_transaction(transaction: &amp;Transaction) -&gt; CheckResult&lt;'_&gt; {
+        for input in transaction.inputs.iter() {
+            // Fetch UTXO from the storage
+            if let Some(output) = &lt;UnspentOutputs&lt;T&gt;&gt;::get(&amp;input.parent_output) {
+                ensure!(
+                    !&lt;LockedOutputs&lt;T&gt;&gt;::exists(&amp;input.parent_output),
+                    &quot;utxo is locked&quot;
+                );
+            }
+        }
+    }
+}
+#}</code></pre></pre>
+<a class="header" href="#collateral-management-a-name--collatza" id="collateral-management-a-name--collatza"><h2>Collateral Management <a name = "collatz"></a></h2></a>
+<p><em>in progress :) -- see <a href="https://github.com/nczhu/collateral"><code>collateral</code></a> for a sneak peek of the recipe</em></p>
+<a class="header" href="#transaction-ordering" id="transaction-ordering"><h1>Transaction Ordering</h1></a>
+<p>To customize the transaction ordering logic for a Substrate blockchain, use the <a href="https://crates.parity.io/substrate_client/runtime_api/trait.TaggedTransactionQueue.html?search="><code>TaggedTransactionQueue</code></a> trait to specify the transaction queue logic and mitigate race conditions. To do so, implement the following function,</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn validate_transaction(
+    &amp;self,
+    at: &amp;BlockId&lt;Block&gt;,
+    tx: &lt;Block as BlockT&gt;::Extrinsic
+) -&gt; Result&lt;TransactionValidity, Error&gt;
+#}</code></pre></pre>
+<p>This function signature reveals that, in the event of a successful call, the return type must be <a href="https://crates.parity.io/sr_primitives/transaction_validity/enum.TransactionValidity.html"><code>TransactionValidity</code></a>. This enum has three variants</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub enum TransactionValidity {
+    Invalid(i8),
+    Valid {
+        priority: TransactionPriority,
+        requires: Vec&lt;TransactionTag&gt;,
+        provides: Vec&lt;TransactionTag&gt;,
+        longevity: TransactionLongevity,
+    },
+    Unknown(i8),
+}
+#}</code></pre></pre>
+<p>In the context of the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, specify the hashes of required transactions (<code>missing_utxos</code>) in the <code>requires</code> field while also specifying the list of transactions for which this utxo satisfies <code>requires</code> in the <code>provides</code> field. The <code>longevity</code> field is set somewhat arbitrarily for this example, and the <code>priority</code> field serves to enforce an ordering on the set of transactions.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl runtime_api::TaggedTransactionQueue&lt;Block&gt; for Runtime {
+    fn validate_transaction(tx: &lt;Block as BlockT&gt;::Extrinsic) -&gt; TransactionValidity {
+        use support::IsSubType;
+        use runtime_primitives::{
+            traits::Hash,
+            transaction_validity::{TransactionLongevity, TransactionPriority, TransactionValidity},
+        };
+
+        // Special handling for extrinsics representing UTXO transactions
+        if let Some(&amp;utxo::Call::execute(ref transaction)) = IsSubType::&lt;utxo::Module&lt;Runtime&gt;&gt;::is_aux_sub_type(&amp;tx.function) {
+            // List of tags to require
+            let requires;
+
+            // Transaction priority to assign
+            let priority;
+
+            const INVALID_UTXO: i8 = -99;
+
+            match &lt;utxo::Module&lt;Runtime&gt;&gt;::check_transaction(&amp;transaction) {
+                // Transaction verification failed
+                Err(e) =&gt; {
+                    runtime_io::print(e);
+                    return TransactionValidity::Invalid(INVALID_UTXO);
+                }
+
+                // Transaction is valid and verified
+                Ok(utxo::CheckInfo::Totals {input, output}) =&gt; {
+                    // All input UTXOs were found, so we consider input conditions to be met
+                    requires = Vec::new();
+
+                    // Priority is based on a transaction fee that is equal to the leftover value
+                    let max_priority = utxo::Value::from(TransactionPriority::max_value());
+                    priority = max_priority.min(input - output) as TransactionPriority;
+                }
+                
+                // Transaction is missing inputs
+                Ok(utxo::CheckInfo::MissingInputs(missing)) =&gt; {
+                    // Since some referred UTXOs were not found in the storage yet,
+                    // we tag current transaction as requiring those particular UTXOs
+                    requires = missing
+                        .iter()         // copies itself into a new vec
+                        .map(|hash| hash.as_fixed_bytes().to_vec())
+                        .collect();
+
+                    // Transaction could not be validated at this point,
+                    // so we have no sane way to calculate the priority    
+                    priority = 0;
+                }
+            }
+
+            // Output tags this transaction provides
+            let provides = transaction.outputs
+                .iter()
+                .map(|output| BlakeTwo256::hash_of(output).as_fixed_bytes().to_vec())
+                .collect();
+
+            return TransactionValidity::Valid {
+                requires,
+                provides,
+                priority,
+                longevity: TransactionLongevity::max_value(),
+            };
+        }
+
+        // Fall back to default logic for non UTXO::execute extrinsics
+        Executive::validate_transaction(tx)
+    }
+}
+#}</code></pre></pre>
+<p><em>Read more about the <a href="https://docs.substrate.dev/docs/transaction-lifecycle-in-substrate">transaction lifecycle</a> in Substrate</em></p>
+<a class="header" href="#offline-interaction-via-inherents" id="offline-interaction-via-inherents"><h1>Offline Interaction via Inherents</h1></a>
+<p><em><a href="https://github.com/gautamdhameja/substrate-inherents-sample">Substrate Inherents Sample</a></em></p>
+<p>Often times, it might be necessary to incorporate off-chain data as inputs for processes validated on-chain. In these situations, it is useful to be familiar with <a href="https://crates.parity.io/substrate_inherents/index.html"><code>substrate-inherents</code></a>.</p>
+<p>Once <code>substrate-inherents</code>is added as a dependency in the <code>cargo.toml</code> file and the module is declared publicly, the <code>Inherent</code> parameter should be added to the custom module definition in the <code>construct_runtime!</code>macro.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// in lib.rs
+construct_runtime!(
+    pub enum ...
+    {
+        // ...
+        Template: template::{Module, Call, Storage, Inherent},
+    }
+)
+#}</code></pre></pre>
+<p>Thereafter, the <code>InherentIdentifier</code> needs to be set. This parameter is the unique identifier for the module's inherent data in the <code>InherentData</code> storage -- it should be unique across the runtime.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub const INHERENT_IDENTIFIER: InherentIdentifier = *b&quot;tknusd00&quot;;
+pub type InherentType = u64;
+#}</code></pre></pre>
+<p>In <a href="https://github.com/paritytech/substrate/blob/master/srml/aura/src/lib.rs"><code>aura</code></a>, this looks like the following:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// The aura inherent identifier.
+pub const INHERENT_IDENTIFIER: InherentIdentifier = *b&quot;auraslot&quot;;
+
+/// The type of the aura inherent.
+pub type InherentType = u64;
+#}</code></pre></pre>
+<p><a href="https://github.com/paritytech/substrate/blob/master/srml/aura/src/lib.rs"><code>aura</code></a> also maintains an auxiliary trait to extract the Aura consensus inherent data:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl AuraInherentData for InherentData {
+    fn aura_inherent_data(&amp;self) -&gt; result::Result&lt;InherentType, RuntimeString&gt; {
+        self.get_data(&amp;INHERENT_IDENTIFIER)
+            .and_then(|r| r.ok_or_else(|| &quot;Aura inherent data not found&quot;.into()))
+    }
+
+    fn aura_replace_inherent_data(&amp;mut self, new: InherentType) {
+        self.replace_data(INHERENT_IDENTIFIER, &amp;new);
+    }
+}
+#}</code></pre></pre>
+<p>According to runtime convention, the module must also define an <a href="https://crates.parity.io/substrate_inherents/struct.InherentDataProviders.html"><code>InherentDataProvider</code></a> type and implement the <a href="https://crates.parity.io/substrate_inherents/trait.ProvideInherentData.html"><code>ProvideInherentData</code></a> trait. This implementation defines how the consensus engine specifies the inherent data to the runtime before block production time. Specifically, <a href="https://crates.parity.io/substrate_inherents/trait.ProvideInherent.html"><code>ProvideInherent</code></a> indicates the required logic in <code>provide_inherent_data</code> to calculate the inherent data and store it in the <a href="https://crates.parity.io/substrate_inherents/struct.InherentData.html"><code>InherentData</code></a> storage. For the <code>aura</code> module, the <code>InherentDataProvider</code> is declared with the slot duration inherent data for Aura consensus.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// Provides the slot duration inherent data for `Aura`.
+#[cfg(feature = &quot;std&quot;)]
+pub struct InherentDataProvider {
+    slot_duration: u64,
+}
+
+#[cfg(feature = &quot;std&quot;)]
+impl InherentDataProvider {
+    pub fn new(slot_duration: u64) -&gt; Self {
+        Self {
+            slot_duration
+        }
+    }
+}
+#}</code></pre></pre>
+<p>The implementation of <code>ProvideInherentData</code> is provided for the <code>InherentDataProvider</code>; it essentially calculates the slot number as the timestamp over the slot duration (see body of <code>provide_inherent_data</code>):</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[cfg(feature = &quot;std&quot;)]
+impl ProvideInherentData for InherentDataProvider {
+    fn on_register(
+        &amp;self,
+        providers: &amp;InherentDataProviders,
+    ) -&gt; result::Result&lt;(), RuntimeString&gt; {
+        if !providers.has_provider(&amp;timestamp::INHERENT_IDENTIFIER) {
+            // Add the timestamp inherent data provider, as we require it.
+            providers.register_provider(timestamp::InherentDataProvider)
+        } else {
+            Ok(())
+        }
+    }
+
+    fn inherent_identifier(&amp;self) -&gt; &amp;'static inherents::InherentIdentifier {
+        &amp;INHERENT_IDENTIFIER
+    }
+
+    fn provide_inherent_data(
+        &amp;self,
+        inherent_data: &amp;mut InherentData,
+    ) -&gt; result::Result&lt;(), RuntimeString&gt; {
+        let timestamp = inherent_data.timestamp_inherent_data()?;
+        let slot_num = timestamp / self.slot_duration;
+        inherent_data.put_data(INHERENT_IDENTIFIER, &amp;slot_num)
+    }
+
+    fn error_to_string(&amp;self, error: &amp;[u8]) -&gt; Option&lt;String&gt; {
+        RuntimeString::decode(&amp;mut &amp;error[..]).map(Into::into)
+    }
+}
+#}</code></pre></pre>
+<p><em>For a more comprehensive introduction, see the <a href="https://github.com/gautamdhameja/substrate-inherents-sample">Substrate inherents sample</a></em></p>
+<a class="header" href="#verifying-member-uniqueness" id="verifying-member-uniqueness"><h1>Verifying Member Uniqueness</h1></a>
+<p>There are certain advantageous patterns for verifying the uniqueness of an item in a set. In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the <code>check_transaction</code> function ensures that there are no two of the same utxo's by collecting all of them into a <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html"><code>BTreeMap</code></a> and then checking for equality between the BTreeMap (which, like a set, does not add additional of the same element) and the original collection (which might include duplicates). This constitutes a check that the set of UTXOs are all unique and there are no duplicates.</p>
+<p>This pattern can easily be extracted and applied to all situations for which membership uniqueness needs to be checked for some vector. In the context of the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, we have:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// utox-workshop/runtime/src/utxo.rs `check_transaction`
+{
+    let input_set: BTreeMap&lt;_, ()&gt; =
+        transaction.inputs.iter().map(|input| (input, ())).collect();
+
+    ensure!(
+        input_set.len() == transaction.inputs.len(),
+        &quot;each input must only be used once&quot;
+    );
+}
+
+{
+    let output_set: BTreeMap&lt;_, ()&gt; = transaction
+        .outputs
+        .iter()
+        .map(|output| (output, ()))
+        .collect();
+
+    ensure!(
+        output_set.len() == transaction.outputs.len(),
+        &quot;each output must be defined only once&quot;
+    );
+}
+#}</code></pre></pre>
+<p>The use of separation into scopes minimizes the lifetime of the initialized variables within the given scopes. This should logically be done because there is no need to store the <code>BTreeMap&lt;T&gt;</code> for longer than is necessary.</p>
+<a class="header" href="#robust-path-handling" id="robust-path-handling"><h1>Robust Path Handling</h1></a>
+<p>In the <a href="https://github.com/nczhu/utxo-workshop"><code>utxo-workshop</code></a>, the code utilizes an <a href="https://doc.rust-lang.org/rust-by-example/custom_types/enum.html">enum</a> to manage a data race scenario in which a transaction could arrive before some transactions that it <code>require</code>s.</p>
+<p><em>Alice sends Bob 100 units and Bob sends Eve 80 of those units. Let's assume that Bob's transaction is dependent upon Alice's transaction. If Alice's transaction takes a few more seconds to arrive, we do not want to throw out Bob's transaction. Instead of panicking, we should place Bob's transaction in a temporary queue and lock it for some defined time period.</em></p>
+<p>To see this pattern in action, see the <code>check_transaction</code> runtime function:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub fn check_transaction(transaction: &amp;Transaction) -&gt; CheckResult&lt;'_&gt;
+#}</code></pre></pre>
+<p>This function  returns <code>CheckResult&lt;'_&gt;</code>. The type signature of <code>CheckResult&lt;T&gt;</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub type CheckResult&lt;'a&gt; = rstd::result::Result&lt;CheckInfo&lt;'a&gt;, &amp;'static str&gt;;
+#}</code></pre></pre>
+<p>The type signature of <code>CheckInfo&lt;T&gt;</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+/// Information collected during transaction verification
+pub enum CheckInfo&lt;'a&gt; {
+    /// Combined value of all inputs and outputs
+    Totals { input: Value, output: Value },
+
+    /// Some referred UTXOs were missing
+    MissingInputs(Vec&lt;&amp;'a H256&gt;),
+}
+#}</code></pre></pre>
+<p>This reveals that in the event of a successful call, it returns either the <code>Total</code>s struct that can be easily decomposed to calculate leftover value and distribute it evenly among the authorities OR returns a wrapper around the missing UTXOs which were necessary for verification. Here's the code in <code>check_transaction</code> that expresses this logic:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+if missing_utxo.is_empty() {
+    ensure!(
+        total_input &gt;= total_output,
+        &quot;output value must not exceed input value&quot;
+    );
+    Ok(CheckInfo::Totals {
+        input: total_input,
+        output: total_input,
+    })
+} else {
+    Ok(CheckInfo::MissingInputs(missing_utxo))
+}
+#}</code></pre></pre>
+<p>This pattern demonstrates one way to safely handle the common data race that occurs when a conditional transaction arrives in the transaction pool before the arrival of a transaction that it <code>require</code>s. <em>We can extract this pattern to safely handle conditional paths in our code for which panics are undesirable, but it is also preferrable to pause processing.</em></p>
+<a class="header" href="#optimization-tricks" id="optimization-tricks"><h1>Optimization Tricks</h1></a>
+<p>Runtime overhead in Substrate corresponds to the efficiency of the underlying Rust code. Therefore, it is essential to use clean, efficient Rust patterns for performance releases. This section introduces common approaches for optimizing Rust code in general and links to resources that may guide further investigation.</p>
+<ul>
+<li><a href="#premature">Premature Optimization</a></li>
+<li><a href="#sec">Efficiency =&gt; Security</a></li>
+<li><a href="#zero">Zero-Cost Abstractions</a></li>
+<li><a href="#unsafe">Entering <code>unsafe</code> Waters 🏴‍☠️</a></li>
+<li><a href="#more">Fearless Concurrency &amp;&amp; Asynchrony</a></li>
+</ul>
+<p><strong>This section was inspired by and pulls heavily from</strong></p>
+<ul>
+<li><a href="http://troubles.md/posts/rust-optimization/">Achieving Warp Speed with Rust</a> by Jack Fransham, <a href="http://troubles.md/"><code>troubles.md</code></a></li>
+<li><a href="https://www.packtpub.com/application-development/rust-high-performance">High Performance Rust</a> by Iban Eguia Moraza</li>
+</ul>
+<a class="header" href="#premature-optimization-a-name--prematurea" id="premature-optimization-a-name--prematurea"><h2>Premature Optimization <a name = "premature"></a></h2></a>
+<p><em>Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil.</em> - Page 268 of <a href="http://wiki.c2.com/?StructuredProgrammingWithGoToStatements">Structured Programming with <code>goto</code> Statements</a> by Donald Knuth</p>
+<p>Before worrying about performance optimizations, focus on <em>optimizing</em> for readability, simplicity, and maintainability. The first step when building anything is achieving basic functionality. Only after establishing a minimal viable sample is it appropriate to consider performance-based enhancements. With that said, severe inefficiency does open attack vectors for Substrate runtimes (<em>see <a href="#sec">the next section</a></em>). Moreover, the tradeoff between optimization and simplicity is not always so clear...</p>
+<p><em>A common misconception is that optimized code is necessarily more complicated, and that therefore optimization always represents a trade-off. However, in practice, better factored code often runs faster and uses less memory as well. In this regard, optimization is closely related to refactoring, since in both cases we are paying into the code so that we may draw back out again later if we need to.</em> - <a href="http://wiki.c2.com/?PrematureOptimization">src</a></p>
+<p><strong>Rust API Guidelines</strong></p>
+<ul>
+<li><a href="https://rust-lang-nursery.github.io/api-guidelines/about.html">Official Rust API Guidelines</a></li>
+<li><a href="https://github.com/rust-unofficial/patterns">Rust Unofficial Design Patterns</a></li>
+<li><a href="https://deterministic.space/elegant-apis-in-rust.html">Elegant Library API Guidelines</a> by Pascal Hertleif</li>
+</ul>
+<p>Also, use <a href="https://github.com/rust-lang/rust-clippy">clippy</a>!</p>
+<a class="header" href="#efficiency--security-in-substrate-a-name--seca" id="efficiency--security-in-substrate-a-name--seca"><h2>Efficiency =&gt; Security in Substrate <a name = "sec"></a></h2></a>
+<p>We call an algorithm <em>efficient</em> if its running time is polynomial in the size of the input, and <em>highly efficient</em> if its running time is linear in the size of the input. It is important for all on-chain algorithms to be highly efficient, because they must scale linearly as the size of the Polkadot network grows. In contrast, off-chain algorithms are only required to be efficient. - <a href="http://research.web3.foundation/en/latest/polkadot/NPoS/1.intro/">Web3 Research</a></p>
+<p><em>See <a href="https://docs.substrate.dev/docs/tcr-tutorial-best-practices">Substrate Best Practices</a> for more details on how efficiency influences the runtime's economic security.</em></p>
+<p><strong>Related Reading</strong></p>
+<ul>
+<li><a href="https://www.parity.io/onwards/">Onwards; Underpriced EVM Operations</a>, September 2016</li>
+<li><a href="https://www4.comp.polyu.edu.hk/%7Ecsxluo/DoSEVM.pdf">Under-Priced DOS Attacks on Ethereum</a></li>
+</ul>
+<a class="header" href="#rust-zero-cost-abstractions-a-name--zeroa" id="rust-zero-cost-abstractions-a-name--zeroa"><h2>Rust Zero-Cost Abstractions <a name = "zero"></a></h2></a>
+<p>Substrate developers should take advantage of Rust's zero cost abstractions.</p>
+<p><em>Articles</em></p>
+<ul>
+<li><a href="https://rust-embedded.github.io/book/static-guarantees/zero-cost-abstractions.html">Abstraction without overhead: traits in Rust</a></li>
+<li><a href="https://hermanradtke.com/2015/06/22/effectively-using-iterators-in-rust.html">Effectively Using Iterators in Rust</a></li>
+<li><a href="https://rust-embedded.github.io/book/static-guarantees/zero-cost-abstractions.html">Type States</a></li>
+</ul>
+<p><em>Tweets</em></p>
+<ul>
+<li><a href="https://twitter.com/heinz_gies/status/1121490424739303425">iterate over a slice rather than a <code>vec!</code></a></li>
+</ul>
+<p><em>Video</em></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Sn3JklPAVLk">An introduction to structs, traits, and zero-cost abstractions</a></li>
+</ul>
+<a class="header" href="#entering-unsafe-waters---a-name--unsafea" id="entering-unsafe-waters---a-name--unsafea"><h2>Entering <code>unsafe</code> Waters 🏴‍☠️  <a name = "unsafe"></a></h2></a>
+<p><em>Please read <a href="https://doc.rust-lang.org/nomicon/">The Rustonomicon</a> before experimenting with the dark magic that is <code>unsafe</code></em></p>
+<p>To access an element in a specific position, use the <code>get()</code> method. This method performs a double bound check.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+for arr in array_of_arrays {
+    if let Some(elem) = arr.iter().get(1738) {
+        println!(&quot;{}&quot;, elem);
+    }
+}
+#}</code></pre></pre>
+<p>The <code>.get()</code> call performs two checks:</p>
+<ol>
+<li>checks that the index will return <code>Some(elem)</code> or <code>None</code></li>
+<li>checks that the returned element is of type <code>Some</code> or <code>None</code></li>
+</ol>
+<p>If bound checking has already been performed independently of the call, we can invoke <code>.getunchecked()</code> to access the element. Although this is <code>unsafe</code> to use, it is equivalent to C/C++ indexing, thereby improving performance when we already know the element's location.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+for arr in array_of_arrays {
+    println!(&quot;{}&quot;, unsafe { arr.get_unchecked(1738) })
+}
+#}</code></pre></pre>
+<p><strong>NOTE</strong>: if we don't verify the input to <code>.getunchecked()</code>, the caller may access whatever is stored in the location even if it is a memory address outside the slice</p>
+<a class="header" href="#fearless-concurrency--asynchrony-a-name--morea" id="fearless-concurrency--asynchrony-a-name--morea"><h2>Fearless Concurrency &amp;&amp; Asynchrony <a name = "more"></a></h2></a>
+<p>As a systems programming language, Rust provides significant flexibility with respect to low-level optimizations. Specifically, Rust provides fine-grain control over how you perform computation, delegate said computation to the OS's threads, and schedule state transitions within a given thread. There isn't space in this book to go into significant detail, but I'll try to provide resources/reading that have helped me get up to speed. For a high-level overview, Stjepan Glavina provides the following descriptions in <a href="https://stjepang.github.io/2019/01/29/lock-free-rust-crossbeam-in-2019.html">Lock-free Rust: Crossbeam in 2019</a>:</p>
+<ul>
+<li><strong><a href="https://github.com/rayon-rs/rayon">Rayon</a></strong> splits your data into distinct pieces, gives each piece to a thread to do some kind of computation on it, and finally aggregates results. Its goal is to distribute CPU-intensive tasks onto a thread pool.</li>
+<li><strong><a href="https://github.com/tokio-rs/tokio">Tokio</a></strong> runs tasks which sometimes need to be paused in order to wait for asynchronous events. Handling tons of such tasks is no problem. Its goal is to distribute IO-intensive tasks onto a thread pool.</li>
+<li><strong><a href="https://github.com/crossbeam-rs/crossbeam">Crossbeam</a></strong> is all about low-level concurrency: atomics, concurrent data structures, synchronization primitives. Same idea as the <code>std::sync</code> module, but bigger. Its goal is to provide tools on top of which libraries like Rayon and Tokio can be built.</li>
+</ul>
+<p>To dive deeper down these 🐰 holes</p>
+<ul>
+<li><a href="#async">Asynchrony</a></li>
+<li><a href="#concurrency">Concurrency</a></li>
+</ul>
+<a class="header" href="#asynchrony-a-name--asynca" id="asynchrony-a-name--asynca"><h3>Asynchrony <a name = "async"></a></h3></a>
+<p><a href="https://areweasyncyet.rs/">Are we <code>async</code> yet?</a></p>
+<p><strong>Conceptual</strong></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=skos4B5x7qE">RustLatam 2019 - Without Boats: Zero-Cost Async IO</a></li>
+<li><a href="https://boats.gitlab.io/blog/post/wakers-i/">Introduction to Async/Await Programming (withoutboats/wakers-i):</a></li>
+<li><a href="http://aturon.github.io/2016/08/11/futures/">Futures (by Aaron Turon)</a></li>
+</ul>
+<p><strong>Projects</strong></p>
+<ul>
+<li><a href="https://github.com/rustasync">Rust Asynchronous Ecosystem Working Group</a></li>
+<li><a href="https://github.com/withoutboats/romio">romio</a></li>
+<li><a href="https://tokio.rs/docs/overview/">Tokio Docs</a></li>
+</ul>
+<a class="header" href="#concurrency-a-name--concurrencya" id="concurrency-a-name--concurrencya"><h3>Concurrency <a name = "concurrency"></a></h3></a>
+<p><strong>Conceptual</strong></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Dbytx0ivH7Q">Rust Concurrency Explained</a></li>
+<li><a href="https://stjepang.github.io/2019/01/29/lock-free-rust-crossbeam-in-2019.html">Lock-free Rust: Crossbeam in 2019</a></li>
+<li><a href="https://github.com/crossbeam-rs/rfcs/wiki">Crossbeam Research Meta-link</a></li>
+</ul>
+<p><strong>Projects</strong></p>
+<ul>
+<li><a href="https://github.com/spacejam/sled">sled</a></li>
+<li><a href="https://github.com/servo/servo">servo</a></li>
+<li><a href="https://github.com/tikv/tikv">TiKV</a></li>
+</ul>
+<a class="header" href="#dessert-" id="dessert-"><h1>Dessert 🍫</h1></a>
+<p>Check out <strong><a href="https://github.com/substrate-developer-hub/awesome-substrate">awesome-substrate</a></strong> for projects, events, and all the latest Substrate news!</p>
+<a class="header" href="#a-hrefhttpsgithubcomsubstrate-developer-hubfeatured-tutorialsa" id="a-hrefhttpsgithubcomsubstrate-developer-hubfeatured-tutorialsa"><h2><a href="https://github.com/substrate-developer-hub/">Featured Tutorials</a></h2></a>
+<ul>
+<li><a href="https://github.com/substrate-developer-hub/substrate-collectables-workshop">Substrate Collectables Workshop</a></li>
+<li><a href="https://github.com/substrate-developer-hub/utxo-workshop">UTXO Workshop</a></li>
+<li><a href="https://github.com/substrate-developer-hub/substrate-contracts-workshop">Substrate Contracts Workshop</a></li>
+</ul>
+<!-- 
+**Set Up**
+* [`paritytech/substrate-up`](https://github.com/paritytech/substrate-up) - Scripts for working with new Substrate projects
+<p><strong>Consensus</strong></p>
+<ul>
+<li><a href="https://github.com/paritytech/shasper"><code>paritytech/shasper</code></a> - Parity Shasper beacon chain implementation using the Substrate framework.</li>
+<li><a href="https://github.com/paritytech/finality-grandpa"><code>paritytech/finality-grandpa</code></a> - finality gadget for blockchains using common prefix agreement</li>
+<li><a href="https://github.com/paritytech/rhododendron"><code>paritytech/rhododendron</code></a> - Asynchronously safe BFT consensus, implementation in Rust</li>
+</ul>
+<a class="header" href="#tutorials--a-name--tutorialsa" id="tutorials--a-name--tutorialsa"><h2>Tutorials 🍮 <a name = "tutorials"></a></h2></a>
+<p><a href="https://github.com/parity-samples">parity-samples</a></p>
+<ul>
+<li><a href="https://github.com/substrate-developer-hub/substrate-contracts-workshop"><code>substrate/substrate-contracts-workshop</code></a></li>
+<li><a href="https://github.com/shawntabrizi/substrate-collectables-workshop"><code>shawntabrizi/substrate-collectables-workshop</code></a> - A guided tutorial for building a collectable dApp chain on Parity Substrate</li>
+<li><a href="https://github.com/parity-samples/substrate-tcr"><code>parity-samples/substrate-tcr</code></a> - A Parity Substrate runtime implementation of a simple Token Curated Registry (TCR)</li>
+<li><a href="https://github.com/gautamdhameja/substrate-poa"><code>gautamdhameja/substrate-poa</code></a> - A Substrate runtime which allows addition of new validators in a pure PoA fashion</li>
+<li><a href="https://github.com/parity-samples/substrate-tcr-ui"><code>parity-samples/substrate-tcr-ui</code></a> - A react.js frontend for Substrate TCR runtime</li>
+<li><a href="https://github.com/shawntabrizi/substrate-package"><code>shawntabrizi/substrate-package</code></a> - A stable package of the substrate-node-template and substrate-ui</li>
+<li><a href="https://github.com/lsaether/sr-bonded-token/blob/master/Tutorial.md"><code>lsaether/sr-bonded-token</code></a> - Token Bonding Curve tutorial with Substrate</li>
+<li><a href="https://github.com/nczhu/collateral"><code>nczhu/collateral</code></a> collateralize NFTs</li>
+<li><a href="https://github.com/yjkimjunior/ParkingSpaceSubstrate"><code>yjkimjunior/ParkingSpaceSubstrate</code></a></li>
+<li><a href="https://github.com/osuketh/apple-store-substrate"><code>osuketh/apple-store-substrate</code></a></li>
+</ul>
+<a class="header" href="#user-interface--a-name--uia" id="user-interface--a-name--uia"><h2>User Interface 🍦 <a name = "ui"></a></h2></a>
+<ul>
+<li><a href="https://github.com/paritytech/oo7"><code>paritytech/oo7</code></a> - The Bonds framework along with associated modules</li>
+<li><a href="https://github.com/paritytech/substrate-light-ui"><code>paritytech/substrate-light-ui</code></a> - User interface optimized for the Substrate light client</li>
+<li><a href="https://github.com/paritytech/apps"><code>paritytech/apps</code></a> - Basic Polkadot/Substrate UI for interacting with a node</li>
+<li><a href="https://github.com/paritytech/substrate-ui"><code>paritytech/substrate-ui</code></a> - Bondy Polkadot UI</li>
+</ul>
+<a class="header" href="#off-chain-interaction---a-name--offchaina" id="off-chain-interaction---a-name--offchaina"><h2>Off-Chain Interaction  🍨 <a name = "offchain"></a></h2></a>
+<ul>
+<li><a href="https://github.com/PACTCare/Starlog"><code>PACTCare/starlog</code></a> - Starlog: IPFS Metadata Blockchain based on Substrate</li>
+<li><a href="https://github.com/parity-samples/substrate-events-listener"><code>parity-samples/substrate-events-listener</code></a> - Dockerized websocket listener for substrate events; also writes filtered event data to configured storage</li>
+<li><a href="https://github.com/parity-samples/substrate-proof-of-existence"><code>parity-samples/substrate-proof-of-existence</code></a> - Proof of Existence Blockchain built on Parity's Substrate</li>
+<li><a href="https://github.com/stakedtechnologies/Plasm"><code>stakedtechnologies/Plasma</code></a> - add Plasma functions to the Substrate chain</li>
+</ul>
+<a class="header" href="#polkadot--a-name--polkadota" id="polkadot--a-name--polkadota"><h2>Polkadot 🎂 <a name = "polkadot"></a></h2></a>
+<ul>
+<li><a href="https://github.com/paritytech/cumulus"><code>paritytech/cumulus</code></a> - Write Parachains on Substrate</li>
+<li><a href="https://github.com/paritytech/polkadot"><code>paritytech/polkadot</code></a> - Polkadot Node Implementation</li>
+<li><a href="https://github.com/paritytech/substrate-telemetry"><code>paritytech/substrate-telemetry</code></a> - Polkadot telemetry service</li>
+</ul>
+<a class="header" href="#smart-contracts--a-name--contractsa" id="smart-contracts--a-name--contractsa"><h2>Smart Contracts 🍬 <a name = "contracts"></a></h2></a>
+<ul>
+<li><a href="https://github.com/hicommonwealth/edgeware-node"><code>hicommonwealth/edgeware-node</code></a> - Substrate node implementing all our edgeware features</li>
+<li><a href="https://github.com/paritytech/fleetwood"><code>paritytech/fleetwood</code></a> - Testbed repo for trying out ideas of what a smart contract API in Rust would look like</li>
+<li><a href="https://github.com/parity-samples/substrate-erc721"><code>parity-samples/substrate-erc721</code></a> - An implementation of ERC721 built on Parity Substrate</li>
+</ul>
+<a class="header" href="#webassembly-a-name--wasma" id="webassembly-a-name--wasma"><h2>WebAssembly 🍭<a name = "wasm"></a></h2></a>
+<ul>
+<li><a href="https://github.com/paritytech/wasmi"><code>paritytech/wasmi</code></a> - Wasm interpreter in Rust https://paritytech.github.io/wasmi/</li>
+<li><a href="https://github.com/paritytech/pwasm-token-example"><code>paritytech/pwasm-token-example</code></a> - A simple ERC-20 compatible token contract written in Rust compiled into WebAssembly</li>
+<li><a href="https://github.com/paritytech/pwasm-tutorial"><code>paritytech/pwasm-tutorial</code></a> - A step-by-step tutorial on how to write contracts in Wasm for Kovan</li>
+<li><a href="https://github.com/paritytech/parity-wasm"><code>paritytech/parity-wasm</code></a>- WebAssembly serialization/deserialization in rust</li>
+<li><a href="https://github.com/paritytech/pwasm-std"><code>paritytech/pwasm-std</code></a> - WASM contracts standard library for Rust</li>
+<li><a href="https://github.com/paritytech/pwasm-abi"><code>paritytech/pwasm-abi</code></a> - Parity WASM Abi (Legacy and new)</li>
+<li><a href="https://github.com/paritytech/pwasm-test"><code>paritytech/pwasm-test</code></a> - pwasm-test is a set of tools to make it easy to test internal logic of contracts written using pwasm-std</li>
+<li><a href="https://github.com/paritytech/pwasm-ethereum"><code>paritytech/pwasm-ethereum</code></a></li>
+<li><a href="https://github.com/paritytech/wasm-utils"><code>paritytech/wasm-utils</code></a></li>
+</ul>
+<a class="header" href="#cryptography--a-name--cryptoa" id="cryptography--a-name--cryptoa"><h2>Cryptography 🍰 <a name = "crypto"></a></h2></a>
+<ul>
+<li><a href="https://github.com/mixbytes/substrate-module-multisig"><code>mixbytes/substrate-module-multisig</code></a></li>
+<li><a href="https://github.com/filiplazovic/substrate-merkle-tree"><code>filiplazovic/substrate-merkle-tree</code></a></li>
+<li><a href="https://github.com/LayerXcom/bellman-substrate"><code>LayerXcom/bellman-substrate</code></a> - A library for supporting zk-SNARKs to Substrate</li>
+<li><a href="https://github.com/LayerXcom/zero-chain"><code>LayerXcom/zero-chain</code></a>  - A privacy-oriented blockchain on Substrate</li>
+<li><a href="https://github.com/paritytech/substrate-bip39"><code>paritytech/substrate-bip39</code></a>  - deriving secret keys for Ristretto compressed Ed25519 (should be compatible with Ed25519 at this time) from BIP39 phrases</li>
+<li><a href="https://github.com/paritytech/schnorrkel-js"><code>paritytech/schnorrkel-js</code></a> - a Javascript wrapper for schnorrkel signatures on Ristretto using WebAssembly.</li>
+</ul>
+<a class="header" href="#more-open-source-projects--a-name--ossa" id="more-open-source-projects--a-name--ossa"><h2>More Open Source Projects 🍪 <a name = "oss"></a></h2></a>
+<p><strong>Fund Coordination DAO</strong></p>
+<ul>
+<li><a href="https://github.com/4meta5/SunshineDAO"><code>4meta5/SunshineDAO</code></a></li>
+</ul>
+<p><strong>Decentralized Asset Management</strong></p>
+<ul>
+<li><a href="https://github.com/chainx-org/ChainX"><code>chainx-org/ChainX</code></a> - Fully Decentralized Cross-chain Crypto Asset Management on Polkadot <a href="https://chainx.org">chainx</a>, <a href="https://hackmd.io/p_v1M8WGRyy9PggYiKA_Xw#">development notes</a></li>
+</ul>
+<p><strong>Payment Channels</strong></p>
+<ul>
+<li><a href="https://github.com/AdExNetwork/adex-protocol-substrate"><code>AdExNetwork/adex-protocol-substrate</code></a> - Substrate implementation of the AdEx Protocol v4: OUTPACE &amp; Registry <a href="https://www.adex.network/">adex</a></li>
+</ul>
+<p><strong>Identity Registration and Verification</strong></p>
+<ul>
+<li><a href="https://github.com/hicommonwealth/edge-identity"><code>hicommonwealth/edge-identity</code></a> - Identity registration and verification for substrate chains</li>
+</ul>
+<p><strong>User Governed Video Platform</strong></p>
+<ul>
+<li><a href="https://github.com/Joystream/substrate-runtime-joystream"><code>Joystream/substrate-runtime-joystream</code></a></li>
+</ul>
+<p><strong>Token Economics</strong></p>
+<ul>
+<li><a href="https://github.com/lsaether/sr-bonded-token"><code>isaether/sr-bonded-curve</code></a></li>
+</ul>
+<p><strong>Robotics</strong></p>
+<ul>
+<li><a href="https://github.com/airalab/substrate-node-robonomics"><code>airalab/substrate-node-robonomics</code></a> - Substrate Node for Robonomics network <a href="https://telemetry.polkadot.io/#/Robonomics">telemetry</a> --&gt;</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
